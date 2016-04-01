@@ -297,8 +297,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/03/31/hello-world/" itemprop="url">
-                  Hello World
+                <a class="post-title-link" href="/2016/03/31/js/" itemprop="url">
+                  Javascript中常见的异步编程模型[转载]
                 </a>
               
             
@@ -311,7 +311,7 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-03-31T13:31:50+08:00" content="2016-03-31">
+            <time itemprop="dateCreated" datetime="2016-03-31T14:15:59+08:00" content="2016-03-31">
               2016-03-31
             </time>
           </span>
@@ -339,18 +339,16 @@
 
       
         
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-          
+          在Javascript异步编程专题的前一篇文章浅谈Javascript中的异步中，我简明的阐述了“Javascript中的异步原理”、“Javascript如何在单线程上实现异步调用”以及“Javascript中的定时器”等相关问题。
+本篇文章我将会谈一谈Javascript中常用的几种异步编程模型。
+在前端的代码编写中，异步的场景随处可见。比如鼠标点击、键盘回车、网络请求等这些与浏览器紧密联系的操作，比如一些延迟交互特效等等。
+在这些场景中，你必须要使用所谓的“异步模式”，否则将会严重程序的可行性和用户体验。我们列举这些场景中常用的几种异步编程模型，包括回调函数、事件监听、观察者模式（消息订阅/发布）、promise模式。除此之外还会稍微介绍一番ES6（ES7）中新增的方案。
+下面我们将针对每一种编程模型加以说明。
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/03/31/js/">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
