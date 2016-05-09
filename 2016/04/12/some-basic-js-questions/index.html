@@ -63,7 +63,7 @@
 <meta property="og:url" content="http://yoursite.com/2016/04/12/some-basic-js-questions/index.html">
 <meta property="og:site_name" content="前端记录">
 <meta property="og:description" content="请问， 你觉得0.1 + 0.2 等于多少？">
-<meta property="og:updated_time" content="2016-04-12T11:51:23.848Z">
+<meta property="og:updated_time" content="2016-05-09T11:19:22.014Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Javascript中容易忽略的问题">
 <meta name="twitter:description" content="请问， 你觉得0.1 + 0.2 等于多少？">
@@ -244,7 +244,7 @@
 
       
         <h3 id="1-0-1-0-2"><a href="#1-0-1-0-2" class="headerlink" title="(1) 0.1 + 0.2 = ?"></a>(1) 0.1 + 0.2 = ?</h3><p>你是否觉得一眼看上去，这么简单，不就是等于0.3。图样图破森<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="number">0.1</span> + <span class="number">0.2</span>)  <span class="comment">// 0.30000000000000004</span></span><br></pre></td></tr></table></figure></p>
-<p>JS的浮点数精度问题：<br>1 请在代码中浮点数先转换为整数进行运算，最后再除以倍数：<br>针对一位浮点数的运算，用<code>(0.1 <em> 10 + 0.7 </em> 10) / 10</code>&gt;代替<code>0.1 + 0.7</code>，<br>针对两位浮点数的运算，用<code>(0.13 <em> 100 + 0.76 </em> 100) / 100</code>&gt;代替<code>0.13 + 0.76</code>，同理可推<br>2 利用toFixed(args)知道浮点数的小数位数</p>
+<p>JS的浮点数精度问题：<br>1 请在代码中浮点数先转换为整数进行运算，最后再除以倍数：<br>针对一位浮点数的运算，用<pre>(0.1 <em> 10 + 0.7 </em> 10) / 10</pre>&gt;代替<pre>0.1 + 0.7</pre>，<br>针对两位浮点数的运算，用<pre>(0.13 <em> 100 + 0.76 </em> 100) / 100</pre>&gt;代替<pre>0.13 + 0.76</pre>，同理可推<br>2 利用toFixed(args)知道浮点数的小数位数</p>
 <h3 id="2-看题说话"><a href="#2-看题说话" class="headerlink" title="(2) 看题说话"></a>(2) 看题说话</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> x=y=<span class="number">1</span>;</span><br><span class="line">&#125;)()</span><br><span class="line"><span class="built_in">console</span>.log(x);</span><br><span class="line"><span class="built_in">console</span>.log(y);</span><br></pre></td></tr></table></figure>
 <p>这里应该考虑到闭包，隐式创建全局变量等问题</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="literal">undefined</span>;</span><br><span class="line"><span class="literal">undefined</span> == <span class="literal">null</span>; </span><br><span class="line"><span class="number">1</span> == <span class="literal">true</span>;   </span><br><span class="line"><span class="number">2</span> == <span class="literal">true</span>;   </span><br><span class="line"><span class="number">0</span> == <span class="literal">false</span>;  </span><br><span class="line"><span class="number">0</span> == <span class="string">''</span>;     </span><br><span class="line"><span class="literal">NaN</span> == <span class="literal">NaN</span>;  </span><br><span class="line">[] == <span class="literal">false</span>; </span><br><span class="line">[] == ![];</span><br></pre></td></tr></table></figure>
@@ -361,7 +361,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-count">7</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -371,7 +371,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

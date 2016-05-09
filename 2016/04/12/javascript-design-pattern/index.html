@@ -63,7 +63,7 @@
 <meta property="og:url" content="http://yoursite.com/2016/04/12/javascript-design-pattern/index.html">
 <meta property="og:site_name" content="前端记录">
 <meta property="og:description" content="前言： 单体模式，工厂模式，桥梁模式个人认为这个一个优秀前端必须掌握的模式，对抽象编程和接口编程都非常有好处。 装饰者模式和组合模式有很多相似的地方，它们都与所包装的对象实现同样的接口并且会把任何方法的调用传递给这些对象。装饰者模式和组合模式是本人描述的较吃力的两个模式，我个人其实也没用过，所以查了很多相关资料和文档，请大家海涵。 门面模式是个非常有意思的模式，几乎所有的JavaScript库都会">
-<meta property="og:updated_time" content="2016-04-12T11:17:54.246Z">
+<meta property="og:updated_time" content="2016-04-28T09:17:54.810Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Javascript设计模式简述">
 <meta name="twitter:description" content="前言： 单体模式，工厂模式，桥梁模式个人认为这个一个优秀前端必须掌握的模式，对抽象编程和接口编程都非常有好处。 装饰者模式和组合模式有很多相似的地方，它们都与所包装的对象实现同样的接口并且会把任何方法的调用传递给这些对象。装饰者模式和组合模式是本人描述的较吃力的两个模式，我个人其实也没用过，所以查了很多相关资料和文档，请大家海涵。 门面模式是个非常有意思的模式，几乎所有的JavaScript库都会">
@@ -339,6 +339,8 @@
 <p>观察者模式中存在两个角色,观察者和被观察者。在DOM的编程环境中的高级事件模式中，事件监听器说到底就是一种内置的观察者。事件处理器(handler)和时间监听器(listener)并不是一回事，前者就是一种把事件传给与其关联的函数的手段，而在后者中，一个时间可以与几个监听器关联，每个监听器都能独立于其他监听器而改变。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用时间监听器可以让多个函数相应一个事件</span></span><br><span class="line"><span class="keyword">var</span> fn1 = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">//code</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> fn2 = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">//code</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">addEvent(element, <span class="string">'click'</span>, fn1);</span><br><span class="line">addEvent(element, <span class="string">'click'</span>, fn2);</span><br><span class="line"></span><br><span class="line"><span class="comment">//而时间处理函数就办不到</span></span><br><span class="line">element.onclick = fn1;</span><br><span class="line">element.onclick = fn2;</span><br></pre></td></tr></table></figure>
 <p>观察者模式是开发基于行为的应用程序的有力手段，前端程序员可做的就是借助一个事件监听器替你处理各种行为，从而降低内存消耗和提高互动性能。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用AngularJS实现观察者模式</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> services = angular.module(<span class="string">'services'</span>, []);</span><br><span class="line"></span><br><span class="line">services.factory(<span class="string">'ob'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> exports,</span><br><span class="line">        channels = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    exports = &#123;</span><br><span class="line">        subscribe: <span class="function"><span class="keyword">function</span>(<span class="params">topic, callback</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!_.isArray(channels[topic])) &#123;</span><br><span class="line">                channels[topic] = [];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">var</span> handlers = channels[topic];</span><br><span class="line">            handlers.push(callback);</span><br><span class="line">        &#125;,</span><br><span class="line">        unsubscribe: <span class="function"><span class="keyword">function</span>(<span class="params">topic, callback</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!_.isArray(channels[topic])) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">var</span> handlers = channels[topic];</span><br><span class="line">            <span class="keyword">var</span> index = _.indexOf(handlers, callback);</span><br><span class="line">            <span class="keyword">if</span> (index &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                handlers.splice(index, <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        publish: <span class="function"><span class="keyword">function</span>(<span class="params">topic, data</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">            <span class="keyword">var</span> handlers = channels[topic] || [];</span><br><span class="line">            _.each(handlers, <span class="function"><span class="keyword">function</span>(<span class="params">handler</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    handler.apply(self, [data]);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ex) &#123;</span><br><span class="line">                    <span class="built_in">console</span>.log(ex);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> exports;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>上面就是观察者模式的核心实现。在实际项目中，可能会根据需求作一些微调。</p>
 <h3 id="命令（Command）模式"><a href="#命令（Command）模式" class="headerlink" title="命令（Command）模式"></a>命令（Command）模式</h3><p>将一个请求封装为一个对象，从而使你可用不同的请求对客户进行参数化；对请求排队或记录请求日志，以及支持可取消的操作。</p>
 <p>命令对象是一个操作和用来调用这个操作的对象的结合体，所有的命名对象都有一个执行操作，其用途就是调用命令对象所绑定的操作。</p>
 <p>示例，</p>
@@ -385,6 +387,10 @@
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/28/usage-for-angularjs-ng-select/" rel="prev" title="AngularJS:select内置指令用法详解">
+                AngularJS:select内置指令用法详解 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -452,7 +458,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-count">7</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -462,7 +468,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
