@@ -1,0 +1,686 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="hexo,github," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="hexo 是一个优秀的静态博客工具，唯一的不足就是源文件无法同步，让人几乎只能在一台电脑上写博客，为了解决这个问题，我们可以使用 Github 来管理我们的 hexo 源文件，具体思路就是：在我们博客的远程仓库中新建一个分支，用这个分支来存储博客的源文件，这样我们每次在更新博客并部署之后可以顺手多执行两条命令将源文件同步到远程分支中去，不需要做任何环境切换的操作，还可以将部署和同步操作写成一个命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo 博客利用 github 分支同步源文件">
+<meta property="og:url" content="http://yoursite.com/2017/03/06/hexo_blog_for_github_branch_auto_update/index.html">
+<meta property="og:site_name" content="前端记录">
+<meta property="og:description" content="hexo 是一个优秀的静态博客工具，唯一的不足就是源文件无法同步，让人几乎只能在一台电脑上写博客，为了解决这个问题，我们可以使用 Github 来管理我们的 hexo 源文件，具体思路就是：在我们博客的远程仓库中新建一个分支，用这个分支来存储博客的源文件，这样我们每次在更新博客并部署之后可以顺手多执行两条命令将源文件同步到远程分支中去，不需要做任何环境切换的操作，还可以将部署和同步操作写成一个命令">
+<meta property="og:updated_time" content="2017-03-06T07:33:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hexo 博客利用 github 分支同步源文件">
+<meta name="twitter:description" content="hexo 是一个优秀的静态博客工具，唯一的不足就是源文件无法同步，让人几乎只能在一台电脑上写博客，为了解决这个问题，我们可以使用 Github 来管理我们的 hexo 源文件，具体思路就是：在我们博客的远程仓库中新建一个分支，用这个分支来存储博客的源文件，这样我们每次在更新博客并部署之后可以顺手多执行两条命令将源文件同步到远程分支中去，不需要做任何环境切换的操作，还可以将部署和同步操作写成一个命令">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/06/hexo_blog_for_github_branch_auto_update/"/>
+
+
+
+
+
+  <title> hexo 博客利用 github 分支同步源文件 | 前端记录 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端记录</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/06/hexo_blog_for_github_branch_auto_update/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Gao lu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/7390956?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端记录">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                hexo 博客利用 github 分支同步源文件
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-06T14:00:00+08:00">
+                2017-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  hexo 是一个优秀的静态博客工具，唯一的不足就是源文件无法同步，让人几乎只能在一台电脑上写博客，为了解决这个问题，我们可以使用 Github 来管理我们的 hexo 源文件，具体思路就是：在我们博客的远程仓库中新建一个分支，用这个分支来存储博客的源文件，这样我们每次在更新博客并部署之后可以顺手多执行两条命令将源文件同步到远程分支中去，不需要做任何环境切换的操作，还可以将部署和同步操作写成一个命令脚本，自动执行以上命令。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://imweb.io/topic/5848d4259be501ba17b10a9a" target="_blank" rel="external">原文转自imweb社区：</a></p>
+<hr>
+<p>hexo 是一个优秀的静态博客工具，唯一的不足就是源文件无法同步，让人几乎只能在一台电脑上写博客，为了解决这个问题，我们可以使用 Github 来管理我们的 hexo 源文件，具体思路就是：在我们博客的远程仓库中新建一个分支，用这个分支来存储博客的源文件，这样我们每次在更新博客并部署之后可以顺手多执行两条命令将源文件同步到远程分支中去，不需要做任何环境切换的操作，还可以将部署和同步操作写成一个命令脚本，自动执行以上命令。建立同步的过程很简单：</p>
+<h2 id="初始化版本库-amp-建立仓库关联（已与远程仓库关联的可忽略这一步）"><a href="#初始化版本库-amp-建立仓库关联（已与远程仓库关联的可忽略这一步）" class="headerlink" title="初始化版本库&amp;建立仓库关联（已与远程仓库关联的可忽略这一步）"></a>初始化版本库&amp;建立仓库关联（已与远程仓库关联的可忽略这一步）</h2><p>  一般根据 hexo 教程一步步建立起来的博客都没有跟自己的远程仓库建立关联，查看是否关联的方法是输入 git remote 看是否有关联的远程仓库：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git remote</div><div class="line"><span class="comment">// origin</span></div></pre></td></tr></table></figure>
+<p>可以看到我这里有一个名叫 origin 的仓库与我本地的文件夹关联，如果当前还没有关联，先用 git init 命令将你的本地文件夹初始化成一个版本库，然后使用 git remote add origin 你的github仓库地址 命令来建立与远程仓库的关联，这里的 origin 是你定义的远程仓库在本地的名字，你也可以叫别的，一般命名成 origin，这样就建立好了关联了，使用刚刚的 git remote 命令检测会看到你关联的仓库。</p>
+<h2 id="提交文件"><a href="#提交文件" class="headerlink" title="提交文件"></a>提交文件</h2><p>  像正常提交文件那样使用 git add 、 git commit 和 git push 命令提交文件，但这里在 push 的时候要注意新建一个分支去存你要提交的源文件，具体命令是 git push -u origin HEAD:分支名，这里的分支名自己取，HEAD 是版本库的头指针的意思，代表本地版本库里面的最新版本，origin 是刚刚你自己添加远程关联时候的名字，如果你的不是叫 origin 就写成自己定义的名字， -u 参数是为了建立本地分支与远程分支的关联，以后 push 的时候直接输入 git push 就可以了，所以这整个命令的意思就是：把本地最新版本的代码提交到远程仓库的某个分支上去，如果远程仓库还没有这个分支，就在远程仓库里新建一个分支，然后将它跟本地当前分支关联起来。提交之后你就会发现自己的 github 仓库多了一条分支，就是你刚刚提交的那个分支。   至于这里为什么不先在 github 上面手动建立分支，然后再在本地建立关联，是因为如果是远程手动建立分支会自动以 master 分支为模板建立一份一模一样的文件，而我们仓库里面 master 分支存的都是经过 hexo 编译的文件，跟源文件完全不一样，新建这样一个分支之后还要手动把里面的文件删掉，另一个原因是如果在远程手动建分支，你在本地还得手动用 git fetch origin 拉取远程分支的更新，然后再手动建立与分支的关联，比较麻烦，当然如果你是刚开始部署 hexo，github 仓库里面还一点东西都没有的话这些问题都不存在，那就随意。<br>git add .<br>git commit -m ‘submit sth’<br>git push -u origin HEAD:rawblog</p>
+<h2 id="设置默认分支"><a href="#设置默认分支" class="headerlink" title="设置默认分支"></a>设置默认分支</h2><p>  最后我们需要把你新建的那个分支设置成 github 的默认分支，这样做的原因是为了你以后在别的机器上拉取代码的时候能够直接拉取源文件，不用再指定分支。</p>
+<p>在这里选择好默认分支之后，update就行了。现在你就可以使用 github 来同步自己的 hexo 博客源文件啦~</p>
+<p>文章结束－－－－－－－－－－－－</p>
+<p>PS:<br>附上：Mac下配置多个SSH-Key，为了同时在同一台电脑上使用ssh公钥和私钥进行公司日常工作和业余时间进行github代码上传。<br>因为在同一台电脑上，我们不能指望通过ssh-keygen生成的一对密钥对，既能访问github又能访问公司私有的gitlab。</p>
+<p>注意： 这里已经事先配好了用于公司工作提交的第一个ssh公钥和私钥。过程忽略～</p>
+<p>我们进行第二个ssh－key的创建注意事项：</p>
+<ol>
+<li>cd ~/.ssh</li>
+<li>ssh-keygen -t -rsa -C ‘你的github绑定的私人邮箱完整格式’ -f id_rsa_lulua87</li>
+<li>ssh -T git@github.com<br>出现如下信息，表明创建成功：<br>Hi lulua87/lulua87.github.io! You’ve successfully authenticated, but GitHub does not provide shell access.</li>
+<li>cat ~/.ssh/id_rsa_lulua87.pub | pbcopy<br>把为了github生成的公钥上到你的github的blog仓库对应的设置里的最后一项Deploy keys，点击 add Deploy keys 并复制；</li>
+<li>vi ~/.ssh/config<br>然后在~/.ssh 目录下创建config文件，该文件用于配置私钥对应的服务器：<h1 id="icode"><a href="#icode" class="headerlink" title="icode"></a>icode</h1>Host <strong>**<br>HostName </strong>＊*<br>User ＊＊工作邮箱＊＊<br>PreferredAuthentications publickey<br>IdentityFile ~/.ssh/id_rsa</li>
+</ol>
+<h1 id="github"><a href="#github" class="headerlink" title="github"></a>github</h1><p>Host github.com<br>HostName github.com<br>User git<br>PreferredAuthentications publickey<br>IdentityFile ~/.ssh/id_rsa_lulua87</p>
+<p>PS：编辑完成之后，在英文输入法下， 键入esc, :wq 保存并退出。</p>
+<p>当链接到公司内部上的仓库时，会使用id_ras验证远端的公钥是否匹配。而链接到github.com上的仓库时，则使用私钥id_ras_lulua87验证远端（github.com）的公钥(id_rsa_lulua87.pub)是否匹配。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hexo/" rel="tag"># hexo</a>
+          
+            <a href="/tags/github/" rel="tag"># github</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/06/css_class_naming/" rel="next" title="CSS－－命名class">
+                <i class="fa fa-chevron-left"></i> CSS－－命名class
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars0.githubusercontent.com/u/7390956?v=3&s=460"
+               alt="Gao lu" />
+          <p class="site-author-name" itemprop="name">Gao lu</p>
+           
+              <p class="site-description motion-element" itemprop="description">时间就像一张网，你撒在哪里，你的收获就在哪里。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化版本库-amp-建立仓库关联（已与远程仓库关联的可忽略这一步）"><span class="nav-number">1.</span> <span class="nav-text">初始化版本库&建立仓库关联（已与远程仓库关联的可忽略这一步）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提交文件"><span class="nav-number">2.</span> <span class="nav-text">提交文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置默认分支"><span class="nav-number">3.</span> <span class="nav-text">设置默认分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#icode"><span class="nav-number"></span> <span class="nav-text">icode</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#github"><span class="nav-number"></span> <span class="nav-text">github</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gao lu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

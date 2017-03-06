@@ -1,0 +1,747 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="技巧,css3," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="text-overflow主要功能是用来截取文本长度，用（...）来代替截掉的文本，原本这个效果以前主要靠js和程序来完成，那么现在我们可以直接使用CSS3来实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一些实用的CSS3问题及解决">
+<meta property="og:url" content="http://yoursite.com/2016/05/09/some-css3-practice-questions/index.html">
+<meta property="og:site_name" content="前端记录">
+<meta property="og:description" content="text-overflow主要功能是用来截取文本长度，用（...）来代替截掉的文本，原本这个效果以前主要靠js和程序来完成，那么现在我们可以直接使用CSS3来实现">
+<meta property="og:image" content="http://cdn.w3cplus.com/cdn/farfuture/uIe9qU7h16JBryuv8OGphj7O1YZp2aJqKuCODjRoLak/mtime:1341237777/sites/default/files/selection-red.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/MarkdownPhotos/master/20160509/position-centered.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/MarkdownPhotos/master/20160509/unknown-position.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/MarkdownPhotos/master/20160509/ghost.png">
+<meta property="og:updated_time" content="2017-03-04T10:01:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一些实用的CSS3问题及解决">
+<meta name="twitter:description" content="text-overflow主要功能是用来截取文本长度，用（...）来代替截掉的文本，原本这个效果以前主要靠js和程序来完成，那么现在我们可以直接使用CSS3来实现">
+<meta name="twitter:image" content="http://cdn.w3cplus.com/cdn/farfuture/uIe9qU7h16JBryuv8OGphj7O1YZp2aJqKuCODjRoLak/mtime:1341237777/sites/default/files/selection-red.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/05/09/some-css3-practice-questions/"/>
+
+
+
+
+
+  <title> 一些实用的CSS3问题及解决 | 前端记录 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端记录</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/09/some-css3-practice-questions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Gao lu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/7390956?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端记录">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                一些实用的CSS3问题及解决
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-09T20:24:00+08:00">
+                2016-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  text-overflow主要功能是用来截取文本长度，用（...）来代替截掉的文本，原本这个效果以前主要靠js和程序来完成，那么现在我们可以直接使用CSS3来实现
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="text-overflow实现文本-…-截取省略效果"><a href="#text-overflow实现文本-…-截取省略效果" class="headerlink" title="text-overflow实现文本(…)截取省略效果"></a>text-overflow实现文本(…)截取省略效果</h3><p>语法：</p>
+<p>  text-overflow ： clip | ellipsis</p>
+<p>取值说明：</p>
+<p>1、clip:表示不显示省略标记(…)，而只是简单的裁切，需要在一定的高度范围内配合overflow:hidden属性使用，如果不配合的话将无任何效果；</p>
+<p>2、ellipsis：对象文本溢出时将显示省略标记(…)，需要配合overflow:hidden；white-space:nowrap一起使用才会有效果。<br>HTML如下:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"demo text-overflow-ellipsis"</span>&gt;用我来测试text-overflow:ellipsis的性能和使用方法。&lt;<span class="regexp">/div&gt;</span></div></pre></td></tr></table></figure></p>
+<p>对应的CSS:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">.text-overflow-ellipsis &#123;</div><div class="line">    -o-text-overflow: ellipsis;</div><div class="line">    text-overflow: ellipsis;    </div><div class="line">    overflow: hidden;</div><div class="line">    white-space: nowrap; <span class="comment">//让文本不换行</span></div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>text-overflow:ellipsis到目前firefox4.0都还不支持这个属性.</p>
+<p>解决思路:<br>一、Firefox的伪类──:after</p>
+<p>HTML如下:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"demo text-overflow"</span>&gt;</div><div class="line">     &lt;span&gt;&gt;est AH,test AH,test AH,test AH,test AH,test AH,test AH,test AH,test AH,test AH,test AH,test AH,test AH&lt;/span&gt;</div><div class="line">  &lt;<span class="regexp">/div&gt;</span></div></pre></td></tr></table></figure></p>
+<p>CSS如下:<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">.text-overflow &#123;</div><div class="line">   overflow: hidden; /*清除浮动*/</div><div class="line">&#125;</div><div class="line">/*Safari,Opera,IE下效果*/</div><div class="line">.text-overflow span&#123;</div><div class="line">  display: block;</div><div class="line">  width: 100px; /*设置内容宽度*/</div><div class="line">  overflow: hidden;/*隐藏溢出的文本*/</div><div class="line">  white-space: nowrap;/*让文本不换行*/</div><div class="line">  -o-text-overflow: ellipsis;/*Opera下实现ellipsis效果*/</div><div class="line">  text-overflow: ellipsis;/*Safari，IE下实现ellipsis效果*/</div><div class="line">&#125;</div><div class="line">       </div><div class="line">/*Firefox实现效果*/</div><div class="line">@-moz-document url-prefix()&#123; /*@-moz-document url-perfix()&#123;&#125;是firefox的一个独有属性，只有firefox浏览器能识别，也可以说是一种hack*/</div><div class="line">  .text-overflow span &#123;</div><div class="line">    max-width: 70px;/* 在FF下改变内容宽度，用来放置:after增加的内容(...)*/</div><div class="line">    float: left;/*进行浮动*/</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">@-moz-document url-prefix()&#123; </div><div class="line">  /*利用:after增加(...)省略符*/</div><div class="line">  .text-overflow:after &#123;</div><div class="line">     content:"...";/*增加省略符号*/</div><div class="line">     float: left;/*设置浮动*/</div><div class="line">     width: 25px;/*省略符宽度*/</div><div class="line">     padding-left: 5px;/*省略符内距，用来拉开内容之间的距离*/</div><div class="line">     color: #000;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="使用-Selection"><a href="#使用-Selection" class="headerlink" title="使用::Selection"></a>使用::Selection</h3><p>选择文本，背景是红色，而文本是白色的问题，<br><img src="http://cdn.w3cplus.com/cdn/farfuture/uIe9qU7h16JBryuv8OGphj7O1YZp2aJqKuCODjRoLak/mtime:1341237777/sites/default/files/selection-red.png" alt="::Selection"></p>
+<p>::selection使用语法：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">/*Webkit,Opera9.5+,Ie9+*/</div><div class="line">::selection &#123;</div><div class="line">    background: #F00;</div><div class="line">    color: #FFF;</div><div class="line">&#125;</div><div class="line">/*Mozilla Firefox*/</div><div class="line">::-moz-selection &#123;</div><div class="line">    background: #F00;</div><div class="line">    color: #FFF;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Box-sizing"><a href="#Box-sizing" class="headerlink" title="Box-sizing"></a>Box-sizing</h3><p><a href="http://www.w3cplus.com/content/css3-box-sizing" target="_blank" rel="external">box-sizing是CSS3的box属性之一</a>。一说到CSS的盒模型（Box model）我想很多人都会比较烦.</p>
+<p>CSS中Box model是分为两种，第一种是W3C的标准模型，另一种是IE的传统模型，他们相同之处都是对元素计算尺寸的模型，具体说就是对元素的width,height,padding,border以及元素实际尺寸的计算关系；他们不同之处呢？两者的计算方法不一至.</p>
+<p>语法：</p>
+<p>  box-sizing ： content-box || border-box || inherit</p>
+<p>取值说明</p>
+<ol>
+<li><p>content-box:此值为其默认值，其让元素维持W3C的标准Box Model，也就是说元素的宽度/高度（width/height）等于元素边框宽度（border）加上元素内边距（padding）加上元素内容宽度/高度（content width/height）即：Element Width/Height = border+padding+content width/height。</p>
+</li>
+<li><p>border-box:此值让元素维持IE传统的Box Model（IE6以下版本），也就是说元素的宽度/高度等于元素内容的宽度/高度。（从上面Box Model介绍可知，我们这里的content width/height包含了元素的border,padding,内容的width/height【此处的内容宽度/高度=width/height-border-padding】）。</p>
+</li>
+</ol>
+<h3 id="字符相关设置"><a href="#字符相关设置" class="headerlink" title="字符相关设置"></a>字符相关设置</h3><h4 id="word-wrap"><a href="#word-wrap" class="headerlink" title="word-wrap"></a>word-wrap</h4><p>语法：</p>
+<p>   word-wrap ： normal | break-word</p>
+<p>取值说明：</p>
+<ol>
+<li><p>normal和break-word，其中normal为默认值，当其值为normal控制连续文本换行(允许内容顶开容器的边界，换句话说内容可以撑破容器）；</p>
+</li>
+<li><p>break-word将内容在边界内换行（不截断英文单词换行，截断英文单词换行需要使用word-break:all属性）.</p>
+</li>
+</ol>
+<h4 id="word-break使用："><a href="#word-break使用：" class="headerlink" title="word-break使用："></a>word-break使用：</h4><p>上面我们使用word-wrap:break-word只能在内容中换行，而不能实现词内换行，前面提到过如果需要词内换行，我们需要使用word-break属性，下面我们就一起来看看这个属性：</p>
+<p>语法：</p>
+<p>   word-break:normal | break-all | keep-all</p>
+<p>取值说明</p>
+<ol>
+<li><p>normal为默认值，如果设置为默认值时中文则到边界处的汉字换行，如果是英文整个单词换行，如果出现某个单词长度过长，则会撑破容器，如果边框为固定属性，则后面部分将无法显示；</p>
+</li>
+<li><p>break-all：可以强行截断英文单词，达到词内换行效果.</p>
+</li>
+<li><p>keep-all:不允许字断开。如果是中文将把前后标点符号内的一个汉字短语整个换行，英文单词也整个换行，如果出现某个英文字符长度超过边界，则后面的部分将撑破容器，如果边框为固定属性，则后面部分无法显示.</p>
+</li>
+</ol>
+<h4 id="white-space属性"><a href="#white-space属性" class="headerlink" title="white-space属性"></a>white-space属性</h4><p>作用<br>  处理空白符.</p>
+<p>语法:</p>
+<p>  white-space: normal || pre || nowrap || pre-line || pre-wrap || inherit</p>
+<h4 id="字间距word-spacing-和-字符间距letter-spacing"><a href="#字间距word-spacing-和-字符间距letter-spacing" class="headerlink" title="字间距word-spacing  和 字符间距letter-spacing"></a>字间距word-spacing  和 字符间距letter-spacing</h4><h3 id="清楚浮动–-clearfix"><a href="#清楚浮动–-clearfix" class="headerlink" title="清楚浮动– clearfix"></a>清楚浮动– clearfix</h3><p>只需要添加这个类名无需加上任何HTML标记，就可以达到清除浮动的效果：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">.clearfix:before,</div><div class="line">.clearfix:after &#123;</div><div class="line">  <span class="attr">content</span>: <span class="string">" "</span>;</div><div class="line">  display:table;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">.clearfix:after &#123;</div><div class="line">  <span class="attr">clear</span>:both;</div><div class="line">  overflow:hidden;</div><div class="line">&#125;</div><div class="line"></div><div class="line">.clearfix &#123;</div><div class="line">  <span class="attr">zoom</span>: <span class="number">1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="使用-important"><a href="#使用-important" class="headerlink" title="使用!important"></a>使用!important</h3><p>使用!important可以覆盖任何相同的样式，换句话说他可以改为样式的权重：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">p &#123;</div><div class="line">  font-size:<span class="number">20</span>px !important;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>但是,不建议过多使用, 会造成维护困难的问题.</p>
+<h3 id="垂直居中-水平居中-垂直水平居中"><a href="#垂直居中-水平居中-垂直水平居中" class="headerlink" title="垂直居中, 水平居中, 垂直水平居中"></a>垂直居中, 水平居中, 垂直水平居中</h3><h4 id="水平居中"><a href="#水平居中" class="headerlink" title="水平居中"></a>水平居中</h4><p>让一个元素<strong>水平居中</strong>对于CSS来说非常简单：如果是一个内联元素，我们可以在他的父元素上设置text-align:center;；如果是一个块元素，我们可以使用margin:auto;。然而，只要一想到让一个元素<strong>垂直居中</strong>，让人死的心都有了。</p>
+<h4 id="垂直居中"><a href="#垂直居中" class="headerlink" title="垂直居中"></a>垂直居中</h4><p>解决方案有:</p>
+<ol>
+<li>表格布局不讨论(表格显示模式)，因为它需要一些冗余的HTML标签</li>
+<li>inline-block方法不包括，因为要使用很多Hack手段<br>(1) 宽度高度均已知的父元素和子元素:<br><img src="https://raw.githubusercontent.com/lulua87/MarkdownPhotos/master/20160509/position-centered.gif" alt="示例图(1)"><br><a href="https://css-tricks.com/320-quick-css-trick-how-to-center-an-object-exactly-in-the-center/" target="_blank" rel="external">DEMO</a><br>(2)<br><img src="https://raw.githubusercontent.com/lulua87/MarkdownPhotos/master/20160509/unknown-position.png" alt="示例图(2)"></li>
+</ol>
+<p>解决方法:</p>
+<ol>
+<li>最简单粗暴的方法是: 使用table布局<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;table style=<span class="string">"width: 100%;"</span>&gt;</div><div class="line">  &lt;tr&gt;</div><div class="line">     &lt;td style="text-align: center; vertical-align: middle;"&gt;</div><div class="line">          Unknown stuff to be centered.</div><div class="line">     &lt;/td&gt;</div><div class="line">  &lt;/tr&gt;</div><div class="line">&lt;<span class="regexp">/table&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>如果你担心语义化的问题,可以使用如下方式:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"something-semantic"</span>&gt;</div><div class="line">   &lt;div class="something-else-semantic"&gt;</div><div class="line">       Unknown stuff to be centered.</div><div class="line">   &lt;/div&gt;</div><div class="line">&lt;<span class="regexp">/div&gt;</span></div></pre></td></tr></table></figure>
+<p>然后CSS这样:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">.something-semantic &#123;</div><div class="line">  <span class="attr">display</span>: table;</div><div class="line">  width: <span class="number">100</span>%;</div><div class="line">&#125;</div><div class="line">.something-<span class="keyword">else</span>-semantic &#123;</div><div class="line">  <span class="attr">display</span>: table-cell;</div><div class="line">  text-align: center;</div><div class="line">  vertical-align: middle;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/lulua87/MarkdownPhotos/master/20160509/ghost.png" alt="ghost方式"><br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* This parent can be any width and height */</span></div><div class="line">.block &#123;</div><div class="line">  text-align: center;</div><div class="line"></div><div class="line">  <span class="comment">/* May want to do this if there is risk the container may be narrower than the element inside */</span></div><div class="line">  white-space: nowrap;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="comment">/* The ghost, nudged to maintain perfect centering */</span></div><div class="line">.block:before &#123;</div><div class="line">  <span class="attr">content</span>: <span class="string">''</span>;</div><div class="line">  display: inline-block;</div><div class="line">  height: <span class="number">100</span>%;</div><div class="line">  vertical-align: middle;</div><div class="line">  margin-right: <span class="number">-0.25</span>em; <span class="comment">/* Adjusts for spacing */</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* The element to be centered, can also be of any width and height */</span> </div><div class="line">.centered &#123;</div><div class="line">  <span class="attr">display</span>: inline-block;</div><div class="line">  vertical-align: middle;</div><div class="line">  width: <span class="number">300</span>px;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h3><ol>
+<li>绝对定位解决方案</li>
+<li>视窗单位的解决方案</li>
+<li>Flexbox的解决方案</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/技巧/" rel="tag"># 技巧</a>
+          
+            <a href="/tags/css3/" rel="tag"># css3</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/09/controlling-css-animations-transitions-javascript/" rel="next" title="如何使用JavaScript控制CSS Animations和Transitions">
+                <i class="fa fa-chevron-left"></i> 如何使用JavaScript控制CSS Animations和Transitions
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/06/css_class_naming/" rel="prev" title="CSS－－命名class">
+                CSS－－命名class <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars0.githubusercontent.com/u/7390956?v=3&s=460"
+               alt="Gao lu" />
+          <p class="site-author-name" itemprop="name">Gao lu</p>
+           
+              <p class="site-description motion-element" itemprop="description">时间就像一张网，你撒在哪里，你的收获就在哪里。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#text-overflow实现文本-…-截取省略效果"><span class="nav-number">1.</span> <span class="nav-text">text-overflow实现文本(…)截取省略效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Selection"><span class="nav-number">2.</span> <span class="nav-text">使用::Selection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Box-sizing"><span class="nav-number">3.</span> <span class="nav-text">Box-sizing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符相关设置"><span class="nav-number">4.</span> <span class="nav-text">字符相关设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#word-wrap"><span class="nav-number">4.1.</span> <span class="nav-text">word-wrap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#word-break使用："><span class="nav-number">4.2.</span> <span class="nav-text">word-break使用：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#white-space属性"><span class="nav-number">4.3.</span> <span class="nav-text">white-space属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字间距word-spacing-和-字符间距letter-spacing"><span class="nav-number">4.4.</span> <span class="nav-text">字间距word-spacing  和 字符间距letter-spacing</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清楚浮动–-clearfix"><span class="nav-number">5.</span> <span class="nav-text">清楚浮动– clearfix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-important"><span class="nav-number">6.</span> <span class="nav-text">使用!important</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垂直居中-水平居中-垂直水平居中"><span class="nav-number">7.</span> <span class="nav-text">垂直居中, 水平居中, 垂直水平居中</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#水平居中"><span class="nav-number">7.1.</span> <span class="nav-text">水平居中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#垂直居中"><span class="nav-number">7.2.</span> <span class="nav-text">垂直居中</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TODO"><span class="nav-number">8.</span> <span class="nav-text">TODO</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gao lu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
