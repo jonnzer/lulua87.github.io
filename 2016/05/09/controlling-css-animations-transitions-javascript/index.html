@@ -1,0 +1,679 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Javascript,技巧," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="注意：Animations(动画)和Transitions(过渡)是不同的;CSS Transitions(过渡)被应用于元素指定的属性变化时，该属性经过一段时间逐渐的过渡到最终需要的值；而CSS Animations(动画)只是在应用时执行之前定义好的操作，它提供更细粒度的控制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何使用JavaScript控制CSS Animations和Transitions">
+<meta property="og:url" content="http://yoursite.com/2016/05/09/controlling-css-animations-transitions-javascript/index.html">
+<meta property="og:site_name" content="前端记录">
+<meta property="og:description" content="注意：Animations(动画)和Transitions(过渡)是不同的;CSS Transitions(过渡)被应用于元素指定的属性变化时，该属性经过一段时间逐渐的过渡到最终需要的值；而CSS Animations(动画)只是在应用时执行之前定义好的操作，它提供更细粒度的控制。">
+<meta property="og:updated_time" content="2017-03-04T10:01:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何使用JavaScript控制CSS Animations和Transitions">
+<meta name="twitter:description" content="注意：Animations(动画)和Transitions(过渡)是不同的;CSS Transitions(过渡)被应用于元素指定的属性变化时，该属性经过一段时间逐渐的过渡到最终需要的值；而CSS Animations(动画)只是在应用时执行之前定义好的操作，它提供更细粒度的控制。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/05/09/controlling-css-animations-transitions-javascript/"/>
+
+
+
+
+
+  <title> 如何使用JavaScript控制CSS Animations和Transitions | 前端记录 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端记录</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/09/controlling-css-animations-transitions-javascript/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Gao lu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/7390956?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端记录">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何使用JavaScript控制CSS Animations和Transitions
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-09T20:04:00+08:00">
+                2016-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  注意：Animations(动画)和Transitions(过渡)是不同的;CSS Transitions(过渡)被应用于元素指定的属性变化时，该属性经过一段时间逐渐的过渡到最终需要的值；而CSS Animations(动画)只是在应用时执行之前定义好的操作，它提供更细粒度的控制。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://www.w3cplus.com/animation/controlling-css-animations-transitions-javascript.html" target="_blank" rel="external">原文转自w3cplus：</a></p>
+<p>CSS animations和transitions再加上点JavaScript就可以实现硬件加速动画，而且其交互效果比大多数JavaScript库更高效。 So,让我们快点开始吧！小伙伴们都等不及了！</p>
+<h3 id="注意：Animations-动画-和Transitions-过渡-是不同的"><a href="#注意：Animations-动画-和Transitions-过渡-是不同的" class="headerlink" title="注意：Animations(动画)和Transitions(过渡)是不同的"></a>注意：Animations(动画)和Transitions(过渡)是不同的</h3><p>CSS Transitions(过渡)被应用于元素指定的属性变化时，该属性经过一段时间逐渐的过渡到最终需要的值；而CSS Animations(动画)只是在应用时执行之前定义好的操作，它提供更细粒度的控制。</p>
+<p>在这篇文章中，我们将分别针对上述内容进行讲解。</p>
+<h3 id="控制CSS-Transition-过渡"><a href="#控制CSS-Transition-过渡" class="headerlink" title="控制CSS Transition(过渡)"></a>控制CSS Transition(过渡)</h3><p>在编程论坛中，关于transition(过渡)的触发和暂停有无数的疑问。使用JavaScript可以很容易的解决这些疑问。</p>
+<p>触发元素的transiton(过渡)，切换元素的类名可以触发该元素的transition(过渡)</p>
+<p>暂停元素的transition(过渡)， 在你想要暂停过渡点，用getComputedStyle和getPropertyValue获取该元素相应的CSS属性值，然后设置该元素的对应的CSS属性等于你刚才获取到的CSS属性值。</p>
+<p>以下是该方法的一个例子。</p>
+<p>HTML:<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;h3&gt;Pure Javascript&lt;/h3&gt;</div><div class="line">&lt;div class='box'&gt;&lt;/div&gt; </div><div class="line">&lt;button class='toggleButton' value='play'&gt;Play&lt;/button&gt;</div><div class="line"></div><div class="line">&lt;h3&gt;jQuery&lt;/h3&gt;</div><div class="line">&lt;div class='box'&gt;&lt;/div&gt; </div><div class="line">&lt;button class='toggleButton' value='play'&gt;Play&lt;/button&gt;</div></pre></td></tr></table></figure></p>
+<p>css:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">.box &#123;</div><div class="line">  <span class="attr">margin</span>: <span class="number">30</span>px;</div><div class="line">  height: <span class="number">50</span>px;</div><div class="line">  width: <span class="number">50</span>px;</div><div class="line">  background-color: blue;</div><div class="line">&#125;</div><div class="line">.box.horizTranslate &#123;</div><div class="line">  -webkit-transition: <span class="number">3</span>s;</div><div class="line">  -moz-transition: <span class="number">3</span>s;</div><div class="line">  -ms-transition: <span class="number">3</span>s;</div><div class="line">  -o-transition: <span class="number">3</span>s;</div><div class="line">  transition: <span class="number">3</span>s;</div><div class="line">  margin-left: <span class="number">50</span>% !important;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>JS:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">HTML  CSS  JS  Result</div><div class="line">Edit on </div><div class="line"><span class="keyword">var</span> boxOne = <span class="built_in">document</span>.getElementsByClassName(<span class="string">'box'</span>)[<span class="number">0</span>],</div><div class="line">    $boxTwo = $(<span class="string">'.box:eq(1)'</span>);</div><div class="line"></div><div class="line"><span class="built_in">document</span>.getElementsByClassName(<span class="string">'toggleButton'</span>)[<span class="number">0</span>].onclick = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">if</span>(<span class="keyword">this</span>.innerHTML === <span class="string">'Play'</span>) </div><div class="line">  &#123; </div><div class="line">    <span class="keyword">this</span>.innerHTML = <span class="string">'Pause'</span>;</div><div class="line">    boxOne.classList.add(<span class="string">'horizTranslate'</span>);</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="keyword">this</span>.innerHTML = <span class="string">'Play'</span>;</div><div class="line">    <span class="keyword">var</span> computedStyle = <span class="built_in">window</span>.getComputedStyle(boxOne),</div><div class="line">        marginLeft = computedStyle.getPropertyValue(<span class="string">'margin-left'</span>);</div><div class="line">    boxOne.style.marginLeft = marginLeft;</div><div class="line">    boxOne.classList.remove(<span class="string">'horizTranslate'</span>);    </div><div class="line">  &#125;  </div><div class="line">&#125;</div><div class="line"></div><div class="line">$(<span class="string">'.toggleButton:eq(1)'</span>).on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; </div><div class="line">  <span class="keyword">if</span>($(<span class="keyword">this</span>).html() === <span class="string">'Play'</span>) </div><div class="line">  &#123;</div><div class="line">    $(<span class="keyword">this</span>).html(<span class="string">'Pause'</span>);</div><div class="line">    $boxTwo.addClass(<span class="string">'horizTranslate'</span>);</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    $(<span class="keyword">this</span>).html(<span class="string">'Play'</span>);</div><div class="line">    <span class="keyword">var</span> computedStyle = $boxTwo.css(<span class="string">'margin-left'</span>);</div><div class="line">    $boxTwo.removeClass(<span class="string">'horizTranslate'</span>);</div><div class="line">    $boxTwo.css(<span class="string">'margin-left'</span>, computedStyle);</div><div class="line">  &#125;  </div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+            <a href="/tags/技巧/" rel="tag"># 技巧</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/09/some-javascript-skills/" rel="next" title="Javascript中的一些技巧">
+                <i class="fa fa-chevron-left"></i> Javascript中的一些技巧
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/09/some-css3-practice-questions/" rel="prev" title="一些实用的CSS3问题及解决">
+                一些实用的CSS3问题及解决 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars0.githubusercontent.com/u/7390956?v=3&s=460"
+               alt="Gao lu" />
+          <p class="site-author-name" itemprop="name">Gao lu</p>
+           
+              <p class="site-description motion-element" itemprop="description">时间就像一张网，你撒在哪里，你的收获就在哪里。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#注意：Animations-动画-和Transitions-过渡-是不同的"><span class="nav-number">1.</span> <span class="nav-text">注意：Animations(动画)和Transitions(过渡)是不同的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#控制CSS-Transition-过渡"><span class="nav-number">2.</span> <span class="nav-text">控制CSS Transition(过渡)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gao lu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
