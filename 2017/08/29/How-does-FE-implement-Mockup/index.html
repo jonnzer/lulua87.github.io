@@ -1,0 +1,791 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="视觉设计稿,H5," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="作为前端开发工程师，往往需要视觉和UI设计师给出设计图，包括psd稿和视觉标注图，前端才能进行开发。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端如何实现视觉设计稿">
+<meta property="og:url" content="http://yoursite.com/2017/08/29/How-does-FE-implement-Mockup/index.html">
+<meta property="og:site_name" content="前端记录">
+<meta property="og:description" content="作为前端开发工程师，往往需要视觉和UI设计师给出设计图，包括psd稿和视觉标注图，前端才能进行开发。">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/pixel.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/iphone.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/mi.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/163.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/163-js.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/lagou6.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/lagouIpad.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/tao.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/tao-design-parten.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/nuo.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/px-6.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/px-5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/nuomi-app.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/nuomi-app-c.jpg">
+<meta property="og:updated_time" content="2017-09-04T05:58:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="前端如何实现视觉设计稿">
+<meta name="twitter:description" content="作为前端开发工程师，往往需要视觉和UI设计师给出设计图，包括psd稿和视觉标注图，前端才能进行开发。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/pixel.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/29/How-does-FE-implement-Mockup/"/>
+
+
+
+
+
+  <title> 前端如何实现视觉设计稿 | 前端记录 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端记录</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/29/How-does-FE-implement-Mockup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Gao lu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/7390956?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端记录">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                前端如何实现视觉设计稿
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-29T19:00:00+08:00">
+                2017-08-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  作为前端开发工程师，往往需要视觉和UI设计师给出设计图，包括psd稿和视觉标注图，前端才能进行开发。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在这篇文章中将和大家探讨一下关于前端在移动端开发如何去实现视觉设计稿。探讨过后，在大家的实际工作中或许能帮助解决一些问题。</p>
+<h3 id="前端工程师需要明白的「像素」"><a href="#前端工程师需要明白的「像素」" class="headerlink" title="前端工程师需要明白的「像素」"></a>前端工程师需要明白的「像素」</h3><p>一般设计稿是640px或者<em>750px</em>（现在最流行），但是iPhone 5不是320px宽吗，iPhone 6不是375px宽吗?<br>这里需要理解一下基础概念： <em>设备像素</em>(device pixel)，<em>CSS像素</em>(css pixel)以及<em>设备像素比</em>(device pixel ratio)。</p>
+<ul>
+<li><p>设备像素(device pixel):<br>设备像素设是物理概念，指的是设备中使用的物理像素。<br>比如iPhone 5的分辨率<code>640 x 1136px</code>。</p>
+</li>
+<li><p>CSS像素(css pixel):<br>CSS像素是Web编程的概念，指的是CSS样式代码中使用的逻辑像素。<br>在CSS规范中，长度单位可以分为两类，绝对(absolute)单位以及相对(relative)单位。px是一个相对单位，相对的是设备像素(device pixel)。</p>
+</li>
+<li><p>设备像素比(device pixel ratio):<br>即<code>window.devicePixelRatio</code>，是设备上物理像素和设备独立像素(device-independent pixels (dips))的比例。<br>公式表示就是<code>window.devicePixelRatio = 物理像素 / dips</code></p>
+</li>
+</ul>
+<p>垂直手机屏幕下，使用<code>&amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width&quot;&amp;gt;</code>，iphone5屏幕物理像素640像素，独立像素还是320像素，因此，<code>window.devicePixelRatio</code>等于2。</p>
+<p><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/pixel.png" alt="Image text"></p>
+<p>比如iPhone 5，6使用的是Retina视网膜屏幕（2倍屏），6plus是3倍屏，使用2px x 2px的<code>device pixel</code> 代表<code>1px x 1px</code>的 <code>css pixel</code>，所以设备像素数为<code>640 x 1136px</code>（5），<code>750 x 1134</code>（6），而CSS逻辑像素数为<code>320 x 568px</code>（5），<code>375 x 667</code>（6）；5，6的<code>window.devicePixelRatio=2</code>，6plus 为3。</p>
+<p><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/iphone.png" alt="Image text"></p>
+<h3 id="H5适配：rem方案"><a href="#H5适配：rem方案" class="headerlink" title="H5适配：rem方案"></a>H5适配：rem方案</h3><p>rem：是CSS3新增的一个相对单位，相对于<code>html标签</code>的<code>font-size</code>的大小为基础的。而<code>font-size</code>的大小可以动态根据<em>手机屏幕宽度</em><code>document.documentElement.clientWidth</code>来设置，从而达到<em>自适应屏幕</em>的目的。</p>
+<p>我这里找了一下<a href="https://m.mi.com/" target="_blank" rel="external">小米</a>，<a href="http://3g.163.com/touch/" target="_blank" rel="external">网易</a>，<a href="https://m.lagou.com/" target="_blank" rel="external">拉勾网</a>，<a href="https://m.taobao.com" target="_blank" rel="external">手淘</a> 以及糯米，大同小异。</p>
+<h4 id="小米官网"><a href="#小米官网" class="headerlink" title="小米官网"></a><a href="https://m.mi.com/" target="_blank" rel="external">小米官网</a></h4><p><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/mi.jpg" alt="Image text"></p>
+<p>设计稿是720px的，即5英寸屏幕的安卓手机（720 x 1280px）。<br>对于页面缩放和横竖屏事件进行监听，改变html根元素字体<code>clientWidth/720/100</code>。<br>如图是这样计算的<code>375/(720/100) = 52.0833</code></p>
+<h4 id="网易"><a href="#网易" class="headerlink" title="网易"></a><a href="http://3g.163.com/touch/" target="_blank" rel="external">网易</a></h4><p><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/163.png" alt="Image text"></p>
+<p><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/163-js.png" alt="Image text"></p>
+<p>iphone6 : <code>375/7.5=50</code>, 则知道设计稿应该是基于iphone6来的，所以它的设计稿竖直放时的横向分辨率为750px，为了计算方便，取一个100px的font-size为参照，那么body元素的宽度就可以设置为<code>width: 7.5rem</code>，于是html的<code>font-size=deviceWidth / 7.5</code>。布局时，设计图标注的尺寸除以100得到css中的尺寸。并且布局中的<code>font-size</code>也可用<code>rem</code>单位。</p>
+<h4 id="拉勾网"><a href="#拉勾网" class="headerlink" title="拉勾网"></a><a href="https://m.lagou.com/" target="_blank" rel="external">拉勾网</a></h4><p><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/lagou6.png" alt="Image text"><br><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/lagouIpad.jpg" alt="Image text"></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">html &#123;</div><div class="line">	font-size: <span class="number">65.5</span>%;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>设置html根元素字体为<code>65.5%</code>，对应px单位则为<code>10.48px</code>，则列表里时间信息字体设置为<code>1rem = 10.48px</code>，chrome在<code>-webkit-text-size-adjust: 100%;</code>情况下小于<code>12px</code>的一律显示为<code>12px</code>。</p>
+<p>拉勾网页面列表部分是<code>px</code>为单位，字体是<code>rem</code>，底部bar是使用<code>百分百</code>来控制宽高间距。</p>
+<p>之前网上讨论的比较多的是<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">body &#123;</div><div class="line">	font-size: <span class="number">62.5</span>%;</div><div class="line">&#125;</div><div class="line">p &#123;</div><div class="line"> 	font-size: <span class="number">1.2</span>em;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>则<code>1em = 16px * 62.5% = 10px</code>，em的初始值为<code>1em = 16px</code>，而为了方便计算， 换算一下<code>10 / 16</code>（16px是chrome浏览器默认字体大小）。缺点是进行任何元素设置，都有可能需要知道他父元素的大小，比较繁琐低效。</p>
+<h4 id="手淘"><a href="#手淘" class="headerlink" title="手淘"></a><a href="https://m.taobao.com" target="_blank" rel="external">手淘</a></h4><p><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/tao.jpg" alt="Image text"></p>
+<p>（1）动态设置viewport的scale</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> scale = <span class="number">1</span> / devicePixelRatio;</div><div class="line"><span class="built_in">document</span>.querySelector(<span class="string">'meta[name="viewport"]'</span>).setAttribute(<span class="string">'content'</span>,<span class="string">'initial-scale='</span> + scale + <span class="string">', maximum-scale='</span> + scale + <span class="string">', minimum-scale='</span> + scale + <span class="string">', user-scalable=no'</span>);</div></pre></td></tr></table></figure>
+<p>（2）动态计算html的font-size</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">document</span>.documentElement.style.fontSize = <span class="built_in">document</span>.documentElement.clientWidth / <span class="number">10</span> + <span class="string">'px'</span>;</div></pre></td></tr></table></figure>
+<p>（3）布局的时候，各元素的css尺寸=设计稿标注尺寸/设计稿横向分辨率/10</p>
+<p>设计稿是750的，所以html的font-size就是75，如果某个元素是150px的宽，换算成rem就是<code>150 / 75 = 2rem</code>。</p>
+<p>整个手淘设计师和前端开发的适配协作基本思路是：</p>
+<ul>
+<li>选择一种尺寸作为设计和开发基准</li>
+<li>定义一套适配规则，自动适配剩下的两种尺寸(介于iphone6的小屏和大屏)</li>
+<li>特殊适配效果给出设计效果</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/tao-design-parten.png" alt="Image text"></p>
+<p>手淘推出了一套移动端适配的方案——<a href="https://github.com/amfe/lib-flexible" target="_blank" rel="external">flexible方案</a>。</p>
+<p>总结来说：</p>
+<ul>
+<li>动态读取设备宽度并结合设备的像素比 </li>
+<li>动态改变html的font-size大小 &amp; 页面缩放比例 </li>
+<li>影响以rem为单位的元素的最终呈现</li>
+</ul>
+<h4 id="糯米"><a href="#糯米" class="headerlink" title="糯米"></a><a href="https://bj.nuomi.com/" target="_blank" rel="external">糯米</a></h4><ul>
+<li>糯米某活动H5<br><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/nuo.png" alt="Image text"></li>
+</ul>
+<p>设计稿是<code>640</code>的，html字体设置为屏幕宽度，以iphone6为例，<code>font-size: 375px</code>; 如果某个元素是<code>150px</code>的宽，换算成<code>rem</code>就是<code>150/640rem</code>。</p>
+<hr>
+<h3 id="px方案：css尺寸为对应设计稿／2"><a href="#px方案：css尺寸为对应设计稿／2" class="headerlink" title="px方案：css尺寸为对应设计稿／2"></a>px方案：css尺寸为对应设计稿／2</h3><p>设计稿是750的。<br><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/px-6.png" alt="Image text"><br><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/px-5.png" alt="Image text"></p>
+<p>优点：简单粗暴，所有css尺寸均为设计稿尺寸直接除2，开发快速简单；<br>缺点：可能出现一排放不下的情况，需要针对小屏幕如5及以下做单独适配</p>
+<h3 id="vw方案"><a href="#vw方案" class="headerlink" title="vw方案"></a>vw方案</h3><ul>
+<li><a href="https://m.nuomi.com" target="_blank" rel="external">糯米WAP</a><br>利用CSS3中新增单位<mark>vw</mark>，配合<mark>百分比</mark>来做响应式开发。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>单位</th>
+<th style="text-align:center">释义</th>
+<th style="text-align:right">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>px</td>
+<td style="text-align:center">相对于显示器屏幕分辨率</td>
+<td style="text-align:right">-</td>
+</tr>
+<tr>
+<td>em</td>
+<td style="text-align:center">相对于父元素字体大小</td>
+<td style="text-align:right">-</td>
+</tr>
+<tr>
+<td>rem</td>
+<td style="text-align:center">相对于根元素字体大小</td>
+<td style="text-align:right">css3</td>
+</tr>
+<tr>
+<td>vw</td>
+<td style="text-align:center">相对于视窗的宽度</td>
+<td style="text-align:right">css3</td>
+</tr>
+<tr>
+<td>vh</td>
+<td style="text-align:center">相对于视窗的高度</td>
+<td style="text-align:right">css3</td>
+</tr>
+</tbody>
+</table>
+<p><code>vw</code> 相对于视窗的宽度：视窗宽度是<code>100vw</code>。<br> 如果视区宽度是100vm, 则1vm是视区宽度的1/100, 也就是1%，类似于width: 1%。<br> 那iphone6来说，<code>document.documentElement.clientWidth=375</code>, 则豆腐块宽度为 <code>375/100*30=112.5px</code></p>
+<p><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/nuomi-app.jpg" alt="Image text"><br><img src="https://raw.githubusercontent.com/lulua87/image/master/2017-08-29/nuomi-app-c.jpg" alt="Image text"></p>
+<hr>
+<h3 id="混合-rem-px-vw-百分百等单位混用"><a href="#混合-rem-px-vw-百分百等单位混用" class="headerlink" title="混合: rem px vw 百分百等单位混用"></a>混合: rem px vw 百分百等单位混用</h3><ul>
+<li>rem &amp; 百分比%<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">body &#123;</div><div class="line">	padding-bottom: <span class="number">14.0625</span>%;</div><div class="line">&#125;</div><div class="line"></div><div class="line">a.link &#123;</div><div class="line">	<span class="attr">width</span>: <span class="number">30</span>vw;</div><div class="line">	height: <span class="number">23</span>vw;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>略，同上糯米WAP</p>
+<ul>
+<li>rem &amp; vw<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">html &#123;  </div><div class="line">    font-size: <span class="number">4.375</span>vw;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这里假设设计稿640px，则设置根元素font-size为4.375vw，根据屏幕宽度自适应，在视窗宽度为 320px 的时候，正好是 14px (14 / 320 = 0.04375)。 达到页面默认字体大小14px的目的（其他大小也ok）。好了，现在页面上所有以 <code>rem</code> 为单位的属性值都会随着屏幕的宽度变化而变化，达到自适应的目的。（<code>自适应不用js动态设置根元素大小</code>）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">p &#123;  </div><div class="line">    font-size: <span class="number">1</span>rem;   <span class="comment">/* 设计稿上为 14px */</span></div><div class="line">    padding-top: <span class="number">2</span>rem: <span class="comment">/* 设计稿上为 28px */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在移动端页面开发中，视觉童鞋一般会用750px（iphone 6）来出设计稿，然后要求FE童鞋能够做到页面是自适应屏幕的，这种情况下就可以用rem或者vm等相对单位来做适配，愉快和视觉童鞋一起玩耍啦。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/视觉设计稿/" rel="tag"># 视觉设计稿</a>
+          
+            <a href="/tags/H5/" rel="tag"># H5</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/06/hexo_blog_for_github_branch_auto_update/" rel="next" title="hexo 博客利用 github 分支同步源文件">
+                <i class="fa fa-chevron-left"></i> hexo 博客利用 github 分支同步源文件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/04/nodejs/" rel="prev" title="前端如何实现视觉设计稿">
+                前端如何实现视觉设计稿 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars0.githubusercontent.com/u/7390956?v=3&s=460"
+               alt="Gao lu" />
+          <p class="site-author-name" itemprop="name">Gao lu</p>
+           
+              <p class="site-description motion-element" itemprop="description">时间就像一张网，你撒在哪里，你的收获就在哪里。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前端工程师需要明白的「像素」"><span class="nav-number">1.</span> <span class="nav-text">前端工程师需要明白的「像素」</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#H5适配：rem方案"><span class="nav-number">2.</span> <span class="nav-text">H5适配：rem方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#小米官网"><span class="nav-number">2.1.</span> <span class="nav-text">小米官网</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网易"><span class="nav-number">2.2.</span> <span class="nav-text">网易</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拉勾网"><span class="nav-number">2.3.</span> <span class="nav-text">拉勾网</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手淘"><span class="nav-number">2.4.</span> <span class="nav-text">手淘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#糯米"><span class="nav-number">2.5.</span> <span class="nav-text">糯米</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#px方案：css尺寸为对应设计稿／2"><span class="nav-number">3.</span> <span class="nav-text">px方案：css尺寸为对应设计稿／2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vw方案"><span class="nav-number">4.</span> <span class="nav-text">vw方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混合-rem-px-vw-百分百等单位混用"><span class="nav-number">5.</span> <span class="nav-text">混合: rem px vw 百分百等单位混用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gao lu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
