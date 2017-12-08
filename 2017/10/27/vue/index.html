@@ -1,0 +1,796 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="vue," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文重点讲述Vue2渲染的整体流程，包括数据响应的实现（双向绑定）、模板编译、virtual dom原理等，希望读者看完有所收获。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue原理浅析">
+<meta property="og:url" content="http://yoursite.com/2017/10/27/vue/index.html">
+<meta property="og:site_name" content="前端记录">
+<meta property="og:description" content="本文重点讲述Vue2渲染的整体流程，包括数据响应的实现（双向绑定）、模板编译、virtual dom原理等，希望读者看完有所收获。">
+<meta property="og:image" content="https://cn.vuejs.org/images/data.png">
+<meta property="og:image" content="https://cn.vuejs.org/images/lifecycle.png">
+<meta property="og:image" content="http://images.cnblogs.com/cnblogs_com/fly_dragon/276813/o_lifecycle-标注版本.png">
+<meta property="og:image" content="https://cn.vuejs.org/images/data.png">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/10/27/1f2dc0ff89ddb239ce270277d4200828?imageView2/0/w/1280/h/960/ignore-error/1">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/10/27/70d3aaef6d108afb1cc6d053ae8ba9fe?imageView2/0/w/1280/h/960/ignore-error/1">
+<meta property="og:updated_time" content="2017-11-01T03:43:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vue原理浅析">
+<meta name="twitter:description" content="本文重点讲述Vue2渲染的整体流程，包括数据响应的实现（双向绑定）、模板编译、virtual dom原理等，希望读者看完有所收获。">
+<meta name="twitter:image" content="https://cn.vuejs.org/images/data.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/27/vue/"/>
+
+
+
+
+
+  <title> vue原理浅析 | 前端记录 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端记录</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/27/vue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Gao lu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars0.githubusercontent.com/u/7390956?v=3&s=460">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端记录">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                vue原理浅析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-27T10:30:00+08:00">
+                2017-10-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  本文重点讲述Vue2渲染的整体流程，包括数据响应的实现（双向绑定）、模板编译、virtual dom原理等，希望读者看完有所收获。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>转自<a href="http://imhjm.com/article/59b902107dd03248a2e8d584" target="_blank" rel="external">Vue2原理浅析</a></p>
+<p>本文重点讲述Vue2渲染的整体流程，包括数据响应的实现（双向绑定）、模板编译、virtual dom原理等，希望读者看完有所收获。</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>此部分内容初步介绍前端主流框架部分特点，来提高大家对框架的认识，从而最后导出对vue2原理的整体介绍<br>参考尤雨溪的live <a href="https://www.zhihu.com/lives/846356429794336768" target="_blank" rel="external">不吹不黑聊聊前端框架</a><br>有兴趣的同学可以听听</p>
+<p>现代主流框架均使用一种数据=&gt;视图的方式，隐藏了繁琐的dom操作，采用了声明式编程（Declarative Programming）替代了过去的类jquery的命令式编程（Imperative Programming)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$(<span class="string">"#xxx"</span>).text(<span class="string">"xxx"</span>);</div><div class="line"><span class="comment">// 变为下者</span></div><div class="line">view = render(state);</div></pre></td></tr></table></figure>
+<p>前者我们详细地写了如何去操作dom节点的过程，我们命令什么，它就操作什么；<br>后者则是我们输入了数据状态，输出视图（我们不关心中间的过程，它们均由框架帮助我们实现）；<br>前者固然直接，但是当应用变得复杂则代码将难以维护，而后者框架帮我们实现了一系列的操作，无需管理过程，优势显然可见。</p>
+<p>为了实现这一点，就是实现如何输入数据，输出视图，我们就会注意到上面的render函数，render函数的实现，主要在对dom性能的优化上，当然实现方式也多种多样，直接的innerHTML、使用documentFragment、还有virtual dom，在不同场景下性能上有所不同，但是框架追求的是在大部分场景中框架已经满足你的优化需求，这里我们也不加以赘述，后文会提到。</p>
+<p>当然还有数据变化侦测，从而re-render视图，数据变化侦测中，值得一提的是数据生产者（Producer）和数据消费者（Consumer）之间的联系，这里，我们可以暂且将系统（视图）作为一个数据的消费者，我们的代码设置数据的变化，作为数据的生产者<br>我们这里可以分为系统不可感知数据变化和系统可感知数据变化</p>
+<p>Rx.js中是将两者通信分成拉取（Pull)和推送（Push)，比较不好理解，这里我自己就分了个类<br>系统不可感知数据变化<br>像React／Angular这类框架并不知道数据什么时候变了，但是它视图什么时候更新呢，比如React就是通过<code>setState</code>发信号告诉系统有可能数据变了,然后通过<code>virtual dom diff</code>去渲染视图，angular则是有一个脏值检查流程，遍历比对</p>
+<p>系统可感知数据变化<br>Rx.js ／ vue这一类响应式的，通过观察者模式，使用<code>Observable</code> (可观察对象)，<code>Observer</code> (观察者)(或者是watcher)去订阅（比如视图渲染这一类，其实也可以当成一个观察者去订阅数据了，后面会提到），系统是可以很准确知道哪里数据变了的，从而也就能实现视图更新渲染。</p>
+<p>上者系统不可感知数据变化,粒度粗，有时候还得手动优化（比如<code>pureComponet</code>和<code>shouldComponentUpdate</code>)去跳过一些数据不会更新的视图从而提升性能<br>下者系统可感知数据变化,粒度细，但是绑定大量观察者，有大量的依赖追踪的内存开销</p>
+<p>所以</p>
+<p>这里也就终于提到本文的主角Vue2，它采用了折中粒度的方式，粒度到组件级别上，由<code>watcher</code>订阅数据，当数据变化我们可以得知哪个组件数据变了，然后采用<code>virtual dom diff</code>的方式去更新相应组件。</p>
+<p>后文我们也将展开它是如何实现这些过程的，我们可以先从一个简单的应用开始。</p>
+<h3 id="从一个简单的应用看起"><a href="#从一个简单的应用看起" class="headerlink" title="从一个简单的应用看起"></a>从一个简单的应用看起</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></div><div class="line">  &#123;&#123; message &#125;&#125;</div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> app = <span class="keyword">new</span> Vue(&#123;</div><div class="line">  <span class="attr">el</span>: <span class="string">'#app'</span>,</div><div class="line">  <span class="attr">data</span>: &#123;</div><div class="line">    <span class="attr">message</span>: <span class="string">'Hello Vue!'</span></div><div class="line">  &#125;</div><div class="line">&#125;)</div><div class="line">app.message = <span class="string">`xxx`</span>; <span class="comment">// 发现视图发生了变化</span></div></pre></td></tr></table></figure>
+<p>从这里我们也可以提出几个问题，让后面原理的解析更有针对性。</p>
+<p>数据响应？如何得知数据变化？<br>还有一个小细节，app.message如何拿到vue data中的message?<br>数据变动如何和视图联系在一起？<br><code>virtual dom</code>是什么？<code>virtual dom diff</code>又是什么？<br>当然同时我们也会讲解一些收集依赖等相关的概念。</p>
+<h3 id="数据响应原理"><a href="#数据响应原理" class="headerlink" title="数据响应原理"></a>数据响应原理</h3><h4 id="Object-defineProperty"><a href="#Object-defineProperty" class="headerlink" title="Object.defineProperty"></a>Object.defineProperty</h4><p>Vue数据响应核心是使用了<code>Object.defineProperty</code>方法（IE9+)在对象中定义属性或者修改属性，其中存取描述符很关键的就是get和set,提供给属性getter和setter方法</p>
+<p>可以看下面例子,我们拦截到了数据获取以及设置</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> obj = &#123;&#125;;</div><div class="line"><span class="built_in">Object</span>.defineProperty(obj, <span class="string">'msg'</span>, &#123;</div><div class="line">  get () &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'get'</span>)</div><div class="line">  &#125;,</div><div class="line">  set (newValue) &#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'set'</span>, newValue)</div><div class="line">  &#125;</div><div class="line">&#125;);</div><div class="line">obj.msg <span class="comment">// get</span></div><div class="line">obj.msg = <span class="string">'hello world'</span> <span class="comment">// set hello world</span></div></pre></td></tr></table></figure>
+<p>顺便提到那个小细节的问题</p>
+<p>app.message如何拿到vue data中的message?<br>其实也是跟Object.defineProperty有关<br>Vue在初始化数据的时候会遍历data代理这些数据</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">initData</span> (<span class="params">vm</span>) </span>&#123;</div><div class="line">    <span class="keyword">let</span> data = vm.$options.data</div><div class="line">    vm._data = data</div><div class="line">    <span class="keyword">const</span> keys = <span class="built_in">Object</span>.keys(data)</div><div class="line">    <span class="keyword">let</span> i = keys.length</div><div class="line">    <span class="keyword">while</span> (i--) &#123;</div><div class="line">        <span class="keyword">const</span> key = keys[i]</div><div class="line">        proxy(vm, <span class="string">`_data`</span>, key)</div><div class="line">    &#125;</div><div class="line">    observe(data)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>proxy做了哪些操作呢？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">proxy</span> (<span class="params">target, sourceKey, key</span>) </span>&#123;</div><div class="line">    <span class="built_in">Object</span>.defineProperty(target, key, &#123;</div><div class="line">      <span class="attr">enumerable</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">configurable</span>: <span class="literal">true</span>,</div><div class="line">      get () &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>[sourceKey][key]</div><div class="line">      &#125;</div><div class="line">      set () &#123;</div><div class="line">        <span class="keyword">this</span>[sourceKey][key] = val</div><div class="line">      &#125;</div><div class="line">    &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其实就是用Object.defineProperty多加了一层的访问<br>因此我们就可以用app.message访问到app.data.message<br>也算个Object.defineProperty小应用吧</p>
+<p>讲完这语法的核心层面得知了如何知道数据发生变化，但是响应，是还有回应的，接下来来谈下Vue是如何实现数据响应的？<br>其实就是解决下面的问题，如何实现$watch?</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> vm = <span class="keyword">new</span> Vue(&#123;</div><div class="line">  <span class="attr">data</span>:&#123;</div><div class="line">    <span class="attr">msg</span>: <span class="number">1</span>,</div><div class="line">  &#125;</div><div class="line">&#125;)</div><div class="line">vm.$watch(<span class="string">"msg"</span>, () =&gt; <span class="built_in">console</span>.log(<span class="string">"msg变了"</span>));</div><div class="line">vm.msg = <span class="number">2</span>; <span class="comment">//输出「msg变了」</span></div></pre></td></tr></table></figure>
+<h4 id="观察者模式（Observer-Watcher-Dep"><a href="#观察者模式（Observer-Watcher-Dep" class="headerlink" title="观察者模式（Observer, Watcher, Dep)"></a>观察者模式（Observer, Watcher, Dep)</h4><p>Vue实现响应式有三个很重要的类，Observer类，Watcher类，Dep类<br>我这里先笼统介绍一下（详细可见源码英文注解）</p>
+<p>Observer类主要用于给Vue的数据defineProperty增加getter/setter方法，并且在getter/setter中收集依赖或者通知更新<br>Watcher类来用于观察数据（或者表达式）变化然后执行回调函数（其中也有收集依赖的过程），主要用于$watch API和指令上<br>Dep类就是一个可观察对象，可以有不同指令订阅它（它是多播的）<br>观察者模式,跟发布／订阅模式有点像<br>但是其实略有不同，发布／订阅模式是由统一的事件分发调度中心，on则往中心中数组加事件（订阅），emit则从中心中数组取出事件（发布），发布和订阅以及发布后调度订阅者的操作都是由中心统一完成</p>
+<p>但是观察者模式则没有这样的中心，观察者订阅了可观察对象，当可观察对象发布事件，则就直接调度观察者的行为，所以这里观察者和可观察对象其实就产生了一个依赖的关系，这个是发布／订阅模式上没有体现的。</p>
+<p>其实Dep就是dependence依赖的缩写<br>如何实现观察者模式呢？</p>
+<p>我们先看下面代码，下面代码实现了Watcher去订阅Dep的过程，Dep由于是可以被多个Watcher所订阅的，所以它拥有着订阅者数组，订阅了它，就把Watcher放入数组即可。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dep</span> </span>&#123;</div><div class="line">  <span class="keyword">constructor</span> () &#123;</div><div class="line">    <span class="keyword">this</span>.subs = []</div><div class="line">  &#125;</div><div class="line">  notify () &#123;</div><div class="line">    <span class="keyword">const</span> subs = <span class="keyword">this</span>.subs.slice()</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; subs.length; i++) &#123;</div><div class="line">        subs[i].update()</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">  addSub (sub) &#123;</div><div class="line">    <span class="keyword">this</span>.subs.push(sub)</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> </span>&#123;</div><div class="line">  <span class="keyword">constructor</span> () &#123;</div><div class="line">  &#125;</div><div class="line">  update () &#123;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">let</span> dep = <span class="keyword">new</span> Dep()</div><div class="line">dep.addSub(<span class="keyword">new</span> Watcher()) <span class="comment">// Watcher订阅了依赖</span></div></pre></td></tr></table></figure>
+<p>我们实现了订阅，那通知发布呢，也就是上面的notify在哪里实现呢？</p>
+<p>我们到这里就可以联系到数据响应，我们需要的是数据变化去通知更新，那显然是会在defineProperty中的setter中去实现了，聪明的你应该想到了，我们可以把每一个数据当成一个Dep实例，然后setter的时候去notify就行了，所以我们可以在defineProperty中new Dep()，通过闭包setter就可以取到Dep实例了</p>
+<p>就像下面这样</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</div><div class="line">    <span class="keyword">const</span> dep = <span class="keyword">new</span> Dep()</div><div class="line">    <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</div><div class="line">        <span class="attr">enumerable</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">configurable</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</div><div class="line">            <span class="comment">//...</span></div><div class="line">        &#125;,</div><div class="line">        <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</div><div class="line">            <span class="comment">//...</span></div><div class="line">            dep.notify()</div><div class="line">        &#125;</div><div class="line">    &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后这里就又产生了一个问题<br>你都把Dep实例放里面了，我怎么让我的Watcher实例订阅到这个Dep实例呢，Vue在这里实现了精妙的一笔，从get里面做手脚，在get中是可以取到这个Dep实例的，所以可以在执行watch操作的时候，执行获取数值，触发getter去收集依赖</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span> (<span class="params">obj, key, val</span>) </span>&#123;</div><div class="line">    <span class="keyword">const</span> dep = <span class="keyword">new</span> Dep()</div><div class="line">    <span class="keyword">const</span> property = <span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, key)</div><div class="line"></div><div class="line">    <span class="keyword">const</span> getter = property &amp;&amp; property.get</div><div class="line">    <span class="keyword">const</span> setter = property &amp;&amp; property.set</div><div class="line"></div><div class="line">    <span class="keyword">let</span> childOb = observe(val)</div><div class="line">    <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</div><div class="line">        <span class="attr">enumerable</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">configurable</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveGetter</span> (<span class="params"></span>) </span>&#123;</div><div class="line">            <span class="keyword">const</span> value = getter ? getter.call(obj) : val</div><div class="line">            <span class="keyword">if</span> (Dep.target) &#123;</div><div class="line">                dep.depend() <span class="comment">// 等价执行dep.addSub(Dep.target)，在这里收集</span></div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> value</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> <span class="title">reactiveSetter</span> (<span class="params">newVal</span>) </span>&#123;</div><div class="line">            <span class="keyword">const</span> value = getter ? getter.call(obj) : val</div><div class="line">            <span class="keyword">if</span> (newVal === value) &#123;</div><div class="line">                <span class="keyword">return</span></div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (setter) &#123;</div><div class="line">                setter.call(obj, newVal)</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                val = newVal</div><div class="line">            &#125;</div><div class="line">            dep.notify()</div><div class="line">        &#125;</div><div class="line">    &#125;)</div></pre></td></tr></table></figure>
+<p>这里我们也要结合Watcher的实现来看</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> () </span>&#123;</div><div class="line">  <span class="keyword">constructor</span> (vm, expOrFn, cb, options) &#123;</div><div class="line">    <span class="keyword">this</span>.cb = cb</div><div class="line">    <span class="keyword">this</span>.value = <span class="keyword">this</span>.get()</div><div class="line">  &#125;</div><div class="line">  get () &#123;</div><div class="line">    pushTarget(<span class="keyword">this</span>) <span class="comment">// 标记全局变量Dep.target</span></div><div class="line">    <span class="keyword">let</span> value = <span class="keyword">this</span>.getter.call(vm, vm) <span class="comment">// 触发getter</span></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.deep) &#123;</div><div class="line">      traverse(value)</div><div class="line">    &#125;</div><div class="line">    popTarget() <span class="comment">// 标记全局变量Dep.target</span></div><div class="line">    <span class="keyword">return</span> value</div><div class="line">  &#125;</div><div class="line">  update () &#123;</div><div class="line">    <span class="keyword">this</span>.run()</div><div class="line">  &#125;</div><div class="line">  run () &#123;</div><div class="line">      <span class="keyword">const</span> value = <span class="keyword">this</span>.get() <span class="comment">// new Value</span></div><div class="line">      <span class="comment">// re-collect dep</span></div><div class="line">      <span class="keyword">if</span> (value !== <span class="keyword">this</span>.value ||</div><div class="line">          isObject(value)) &#123;</div><div class="line">          <span class="keyword">const</span> oldValue = <span class="keyword">this</span>.value</div><div class="line">          <span class="keyword">this</span>.value = value</div><div class="line">          <span class="keyword">this</span>.cb.call(<span class="keyword">this</span>.vm, value, oldValue)</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所以我们在<code>new Watcher</code>的时候会执行一个求值的操作，然后因为标记了这个<code>Watcher</code>触发的，所以收集了依赖，也就是观察者订阅了依赖（这个求值有可能不止触发了一个<code>getter</code>,有可能触发了很多个<code>getter</code>,那就收集了多个依赖），我们可以再注意一下上面的run操作，也就是<code>dep.notify()</code>后<code>watcher</code>会执行的操作，还会出现一个get操作，我们可以注意到这里重新收集了一波依赖！（当然里面有相关的去重操作）</p>
+<p>我们再回来回顾上面我们要解决的小例子</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> vm = <span class="keyword">new</span> Vue(&#123;</div><div class="line">  <span class="attr">data</span>: &#123;</div><div class="line">    <span class="attr">msg</span>: <span class="number">1</span>,</div><div class="line">  &#125;</div><div class="line">&#125;)</div><div class="line">vm.$watch(<span class="string">"msg"</span>, () =&gt; <span class="built_in">console</span>.log(<span class="string">"msg变了"</span>));</div><div class="line">vm.msg = <span class="number">2</span>; <span class="comment">//输出「变了」</span></div></pre></td></tr></table></figure>
+<p><code>$watcher</code>其实就是一个<code>new Watcher</code>的封装<br>即<code>new Watcher(vm, ‘msg’, () =&gt; console.log(“msg变了”))</code><br>首先是<code>new Vue</code>遍历了数据，给数据<code>defineProperty</code>加上了<code>getter/setter</code>方法<br>我们<code>new Watcher(vm, &#39;msg&#39;, () =&gt; console.log(&quot;msg变了&quot;))</code>,首先标记了全局变量<code>Dep.target = 该Watcher实例</code>，然后执行msg的get操作，触发到了它的<code>getter</code>，然后dep成功获取到它的订阅者，放入它的订阅者数组，最后我们将<code>Dep.target = null</code><br>最后设置<code>vm.msg = 2</code>,触发到了<code>setter</code>,闭包中的<code>dep.notify</code>,遍历订阅者数组，执行相应的回调操作。<br>其实讲到这里，核心的响应式原理就讲得差不多了。</p>
+<p>但是其实<code>Object.defineProperty</code>并不是万能的，</p>
+<p>数组的push／pop等操作<br>不能监测数组length长度的变化<br>数组的arr[xxx] = yyy无法感知<br>同样的，对象属性的添加和删除无法感知<br>为了解决这些本身js限制的问题</p>
+<p>Vue首先是对数组方法进行变异，用<strong>proto</strong>继承那些方法（如果不行则直接一个个defineProperty到数组上），具体的变异方法就是在后面加上dep.notify的操作<br>至于属性的添加和删除，我们可以想象到，增加属性，那我们根本没有defineProperty，删除属性则连我们之前的defineProperty都给删了，所以这里Vue增加了一个$set/$delete的API去实现这些操作，同样也是在最后加上了dep.notify的操作<br>当然以上就不是单纯靠defineProperty中每一个数据所对应的dep来实现了，在Observer类也有一个dep实例，同时会给数据挂载一个<strong>ob</strong>属性去获取它的Observer实例，像数组和对象的上面特殊操作，在watch收集依赖的时候都会把这个依赖收集到，然后最后使用的是这个dep去notify更新</p>
+<p>这部分就不详细介绍了，有兴趣的读者可以阅读源码<br>这里我们可以稍微提一下一个ES6的新特性Proxy,很有可能是下一代响应机制的主角，因为它可以解决我们上面的缺陷，但是由于兼容问题还不能很好地使用，可以让我们期待一下～</p>
+<p>现在我们再来看看Vue官网的这张图<br><img src="https://cn.vuejs.org/images/data.png" alt="Image text"></p>
+<p>至少目前我们对右半部分很清晰了，Data如何和Watcher联系已经很清楚，但是Render Function，Watcher怎么Trigger Render Function这个还需要去解答，当然还有左下角的Virtual DOM Tree</p>
+<p>数据与视图如何联系</p>
+<p>我这里摘出一段关键的Vue代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> () </span>&#123;</div><div class="line">  <span class="keyword">constructor</span> (vm, expOrFn, cb, options) &#123;</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">updateComponent = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</div><div class="line">   <span class="comment">// hydrating有关ssr本文不涉及</span></div><div class="line">    vm._update(vm._render(), hydrating)</div><div class="line">&#125;</div><div class="line">vm._watcher = <span class="keyword">new</span> Watcher(vm, updateComponent, noop)</div></pre></td></tr></table></figure>
+<p>// noop是回调函数，它是空函数<br>这个其实就是Watcher和Render的核心关系</p>
+<p>还记得我们上面所说的，在执行new Watcher会有一个求值的操作，这里的求值是一个函数表达式,也就是执行updateComponent，执行updateComponent后，会再执行vm._render(),传参数给vm._update(vm._render(), hydrating),收集完依赖以后才结束，这里有两个关键的点，vm._render在做什么？vm._update在做什么？</p>
+<h4 id="vm-render"><a href="#vm-render" class="headerlink" title="vm._render"></a>vm._render</h4><p>我们看下<code>Vue.prototype._render</code>是何方神圣（以下为删减代码）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Vue.prototype._render = <span class="function"><span class="keyword">function</span> (<span class="params"></span>): <span class="title">VNode</span> </span>&#123;</div><div class="line">  <span class="keyword">const</span> vm: Component = <span class="keyword">this</span></div><div class="line">  <span class="keyword">const</span> &#123;</div><div class="line">    render,</div><div class="line">    staticRenderFns,</div><div class="line">    _parentVnode</div><div class="line">  &#125; = vm.$options</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  <span class="keyword">let</span> vnode</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    <span class="comment">// vm._renderProxy我们直接当成vm，其实就是为了开发环境报warning用的</span></div><div class="line">    vnode = render.call(vm._renderProxy, vm.$createElement)</div><div class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</div><div class="line"></div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">// set parent</span></div><div class="line">  vnode.parent = _parentVnode</div><div class="line">  <span class="keyword">return</span> vnode</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所以它这里我们可以看到里面是执行了<code>render</code>函数，render函数来自options，然后返回了vnode</p>
+<p>所以到这里我们可以把我们的目光移到这个render函数从哪里来的</p>
+<p>如果熟悉Vue2的朋友可能知道，Vue提供了一个选项是render就是作为这个函数的，假如没有提供这个选项呢</p>
+<p>我们不妨看看生命周期<br><img src="https://cn.vuejs.org/images/lifecycle.png" alt="Image text"></p>
+<p><img src="http://images.cnblogs.com/cnblogs_com/fly_dragon/276813/o_lifecycle-标注版本.png" alt="Image text"></p>
+<p>我们可以看到Compile template into render function（没有template会将el的outerHTML当成template),所以这里就有一个模板编译的过程</p>
+<h4 id="模板编译"><a href="#模板编译" class="headerlink" title="模板编译"></a>模板编译</h4><p>再摘一段核心代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> ast = parse(template.trim(), options) <span class="comment">// 构建抽象语法树</span></div><div class="line">optimize(ast, options) <span class="comment">// 优化</span></div><div class="line"><span class="keyword">const</span> code = generate(ast, options) <span class="comment">// 生成代码</span></div><div class="line"><span class="keyword">return</span> &#123;</div><div class="line">    ast,</div><div class="line">    <span class="attr">render</span>: code.render,</div><div class="line">    <span class="attr">staticRenderFns</span>: code.staticRenderFns</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们可以看到上面分成三部分</p>
+<ul>
+<li>将模板转化为抽象语法树</li>
+<li>优化抽象语法树</li>
+<li><p>根据抽象语法树生成代码<br>那里面具体做了什么呢？这里我简略讲一下</p>
+</li>
+<li><p>第一部分其实就是各种正则了，对左右开闭标签的匹配以及属性的收集，通过栈的形式，不断出栈入栈去匹配以及更换父节点，最后生成一个对象，包含children,children又包含children的对象</p>
+</li>
+<li>第二部分则是以第一部分为基础，根据节点类型找出一些静态的节点并标记</li>
+<li>第三部分就是生成render函数代码了<br>所以最后会产生这样的效果</li>
+</ul>
+<h4 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"container"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Message is: &#123;&#123; message &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>生成render函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">with</span> (<span class="keyword">this</span>) &#123;</div><div class="line">        <span class="keyword">return</span> _c(<span class="string">'div'</span>, &#123;</div><div class="line">            <span class="attr">attrs</span>: &#123;</div><div class="line">                <span class="string">"id"</span>: <span class="string">"container"</span></div><div class="line">            &#125;</div><div class="line">        &#125;, [_c(<span class="string">'p'</span>, [_v(<span class="string">"Message is: "</span> + _s(message))])])</div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>这里我们又可以结合上面的代码了</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vnode = render.call(vm._renderProxy, vm.$createElement)</div></pre></td></tr></table></figure>
+<p>其中<code>_c</code>就是<code>vm.$createElement</code></p>
+<p>我们将<code>virtual dom</code>具体实现移到下一节，以防影响我们Vue2主线<br><code>vm.$createElement</code>其实就是一个创建vnode的一个API</p>
+<p>知道了<code>vm._render()</code>创建了vnode返回，接下来就是<code>vm._update</code>了</p>
+<h4 id="vm-update"><a href="#vm-update" class="headerlink" title="vm._update"></a>vm._update</h4><p><code>vm._update</code>部分也是跟<code>virtual dom</code>有关，下一节具体介绍，我们可以先透露下函数的功能，顾名思义，就是更新视图，根据传入的vnode更新到视图中。</p>
+<h4 id="数据到视图的整体流程"><a href="#数据到视图的整体流程" class="headerlink" title="数据到视图的整体流程"></a>数据到视图的整体流程</h4><p>所以到这里我们就可以得出一个数据到视图的整体流程的结论了</p>
+<p>在组件级别，vue会执行一个new Watcher<br>new Watcher首先会有一个求值的操作，它的求值就是执行一个函数，这个函数会执行render，其中可能会有编译模板成render函数的操作，然后生成vnode(virtual dom)，再将virtual dom应用到视图中<br>其中将virtual dom应用到视图中（这里涉及到diff后文会讲），一定会对其中的表达式求值(比如,我们肯定会取到它的值再去渲染的），这里会触发到相应的getter操作完成依赖的收集<br>当数据变化的时候，就会notify到这个组件级别的Watcher,然后它还会去求值，从而重新收集依赖，并且重新渲染视图<br>我们再一次来看看Vue官网的这张图<br><img src="https://cn.vuejs.org/images/data.png" alt="Image text"></p>
+<p>一切顺理成章！</p>
+<h4 id="Virtual-DOM"><a href="#Virtual-DOM" class="headerlink" title="Virtual DOM"></a>Virtual DOM</h4><p>我们上一节隐藏了很多Virtual DOM的细节，是因为Virtual DOM大篇幅有可能让我们忘记我们所要探究的问题，这里我们来揭开Virtual DOM的谜团，它其实并没有那么神秘。</p>
+<p>为什么会有Virtual DOM?</p>
+<p>做过前端性能优化的朋友应该都知道，DOM操作都是很慢的，我们要减少对它的操作<br>为啥慢呢？<br>我们可以尝试打出一层DOM的key<br><img src="https://user-gold-cdn.xitu.io/2017/10/27/1f2dc0ff89ddb239ce270277d4200828?imageView2/0/w/1280/h/960/ignore-error/1" alt="Image text"><br>我们可以看出它的属性是庞大，更何况这只是一层</p>
+<p>同时直接对DOM的操作，就必须很注意一些有可能触发重排的操作。</p>
+<p>那Virtual DOM是什么角色呢？它其实就是我们代码到操作DOM的一层缓冲，既然操作DOM慢，那我操作js对象快吧，我就操作js对象，然后最后把这个对象再一起转换成真正的DOM就行了</p>
+<p>所以就变成 代码 =&gt; Virtual DOM( 一个特殊的js对象） =&gt; DOM</p>
+<p>什么是Virtual DOM</p>
+<p>上文其实我们就解答了什么是虚拟DOM,它就是一个特殊的js对象<br>我们可以看看Vue中的Vnode是怎么定义的？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">VNode</span> </span>&#123;</div><div class="line">  <span class="keyword">constructor</span> (</div><div class="line">    tag?: string,</div><div class="line">    data?: VNodeData,</div><div class="line">    children?: ?Array&lt;VNode&gt;,</div><div class="line">    text?: string,</div><div class="line">    elm?: Node,</div><div class="line">    context?: Component,</div><div class="line">    componentOptions?: VNodeComponentOptions,</div><div class="line">    asyncFactory?: Function</div><div class="line">  ) &#123;</div><div class="line">    <span class="keyword">this</span>.tag = tag</div><div class="line">    <span class="keyword">this</span>.data = data</div><div class="line">    <span class="keyword">this</span>.children = children</div><div class="line">    <span class="keyword">this</span>.text = text</div><div class="line">    <span class="keyword">this</span>.elm = elm</div><div class="line">    <span class="keyword">this</span>.ns = <span class="literal">undefined</span></div><div class="line">    <span class="keyword">this</span>.context = context</div><div class="line">    <span class="keyword">this</span>.functionalContext = <span class="literal">undefined</span></div><div class="line">    <span class="keyword">this</span>.key = data &amp;&amp; data.key</div><div class="line">    <span class="keyword">this</span>.componentOptions = componentOptions</div><div class="line">    <span class="keyword">this</span>.componentInstance = <span class="literal">undefined</span></div><div class="line">    <span class="keyword">this</span>.parent = <span class="literal">undefined</span></div><div class="line">    <span class="keyword">this</span>.raw = <span class="literal">false</span></div><div class="line">    <span class="keyword">this</span>.isStatic = <span class="literal">false</span></div><div class="line">    <span class="keyword">this</span>.isRootInsert = <span class="literal">true</span></div><div class="line">    <span class="keyword">this</span>.isComment = <span class="literal">false</span></div><div class="line">    <span class="keyword">this</span>.isCloned = <span class="literal">false</span></div><div class="line">    <span class="keyword">this</span>.isOnce = <span class="literal">false</span></div><div class="line">    <span class="keyword">this</span>.asyncFactory = asyncFactory</div><div class="line">    <span class="keyword">this</span>.asyncMeta = <span class="literal">undefined</span></div><div class="line">    <span class="keyword">this</span>.isAsyncPlaceholder = <span class="literal">false</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>用以上这些属性就能来表示一个DOM</p>
+<h4 id="Virtual-DOM算法"><a href="#Virtual-DOM算法" class="headerlink" title="Virtual DOM算法"></a>Virtual DOM算法</h4><p>这里我们讲的就是涉及上面vm.update的操作</p>
+<p>首先是js对象（Virtual DOM）描述树（vm._render)，转换dom插入(第一次渲染）<br>状态变化，生成新的js对象（Virtual DOM），比对新旧对象<br>将变更应用到DOM上，并保存新的js对象（Virtual DOM），重复第二步操作<br>用js对象描述树(生成Virtual DOM），Vue中就是先转成AST生成code,然后通过$creatElement通过Vnode的那种形式生成Virtual DOM (vm._render的操作)</p>
+<p>这里我们可以具体看下vm._update（其实就是Virtual DOM算法的后两步）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">Vue.prototype._update = <span class="function"><span class="keyword">function</span> (<span class="params">vnode: VNode, hydrating?: boolean</span>) </span>&#123;</div><div class="line">  <span class="keyword">const</span> vm: Component = <span class="keyword">this</span></div><div class="line">  <span class="keyword">if</span> (vm._isMounted) &#123;</div><div class="line">    callHook(vm, <span class="string">'beforeUpdate'</span>)</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">const</span> prevEl = vm.$el</div><div class="line">  <span class="keyword">const</span> prevVnode = vm._vnode</div><div class="line">  <span class="comment">// ...</span></div><div class="line">  <span class="keyword">if</span> (!prevVnode) &#123;</div><div class="line">    <span class="comment">// initial render</span></div><div class="line">    <span class="comment">// 第一次渲染</span></div><div class="line">    vm.$el = vm.__patch__(</div><div class="line">      vm.$el, vnode, hydrating, <span class="literal">false</span> <span class="comment">/* removeOnly */</span>,</div><div class="line">      vm.$options._parentElm,</div><div class="line">      vm.$options._refElm</div><div class="line">    )</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// updates</span></div><div class="line">    <span class="comment">// 更新视图</span></div><div class="line">    vm.$el = vm.__patch__(prevVnode, vnode)</div><div class="line">  &#125;</div><div class="line">  <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到一个关键点<code>vm.__patch__</code>，其实它就是<code>Virtual DOM Diff</code>的核心，也是它最后把真实DOM插入的</p>
+<h4 id="Virtual-DOM-Diff"><a href="#Virtual-DOM-Diff" class="headerlink" title="Virtual DOM Diff"></a>Virtual DOM Diff</h4><p>完整<code>Virtual DOM Diff</code>算法，根据有一篇论文（我忘记在哪里了），是需要O(n^3)的，因为它涉及跨层级的复用，这种时间复杂度是不可接受的，同时考虑到DOM较少涉及跨层级的复用，所以就减少至当前层级的复用，这个算法的复杂度就降到O(n)了，Perfect~</p>
+<p>引用一张React经典的图来帮助大家理解吧，左右同一颜色圈起来的就是比较／复用的范围</p>
+<p><img src="https://user-gold-cdn.xitu.io/2017/10/27/70d3aaef6d108afb1cc6d053ae8ba9fe?imageView2/0/w/1280/h/960/ignore-error/1" alt="Image Text"><br>步入正题，我们看看Vue的patch函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">patch</span> (<span class="params">oldVnode, vnode, hydrating, removeOnly, parentElm, refElm</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (isUndef(vnode)) &#123;</div><div class="line">      <span class="keyword">if</span> (isDef(oldVnode)) invokeDestroyHook(oldVnode)</div><div class="line">      <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">let</span> isInitialPatch = <span class="literal">false</span></div><div class="line">    <span class="keyword">const</span> insertedVnodeQueue = []</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (isUndef(oldVnode)) &#123;</div><div class="line">      <span class="comment">// empty mount (likely as component), create new root element</span></div><div class="line">      <span class="comment">// 老节点不存在，直接创建元素</span></div><div class="line">      isInitialPatch = <span class="literal">true</span></div><div class="line">      createElm(vnode, insertedVnodeQueue, parentElm, refElm)</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="keyword">const</span> isRealElement = isDef(oldVnode.nodeType)</div><div class="line">      <span class="keyword">if</span> (!isRealElement &amp;&amp; sameVnode(oldVnode, vnode)) &#123;</div><div class="line">        <span class="comment">// patch existing root node</span></div><div class="line">        <span class="comment">// 新节点和老节点相同，则给老节点打补丁</span></div><div class="line">        patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly)</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// ... 省略ssr代码</span></div><div class="line">        <span class="comment">// replacing existing element</span></div><div class="line">        <span class="comment">// 新节点和老节点相同，直接替换老节点</span></div><div class="line">        <span class="keyword">const</span> oldElm = oldVnode.elm</div><div class="line">        <span class="keyword">const</span> parentElm = nodeOps.parentNode(oldElm)</div><div class="line">        createElm(</div><div class="line">          vnode,</div><div class="line">          insertedVnodeQueue,</div><div class="line">          <span class="comment">// extremely rare edge case: do not insert if old element is in a</span></div><div class="line">          <span class="comment">// leaving transition. Only happens when combining transition +</span></div><div class="line">          <span class="comment">// keep-alive + HOCs. (#4590)</span></div><div class="line">          oldElm._leaveCb ? <span class="literal">null</span> : parentElm,</div><div class="line">          nodeOps.nextSibling(oldElm)</div><div class="line">        )</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// ...省略代码</span></div><div class="line">    <span class="keyword">return</span> vnode.elm</div><div class="line">  &#125;</div><div class="line"><span class="string">``</span><span class="string">` </span></div><div class="line">所以`patch<span class="string">`大概做下面几件事</span></div><div class="line"></div><div class="line">判断老节点存不存在</div><div class="line">不存在则为首次渲染，直接创建元素</div><div class="line">存在的话则sameVnode使用判断根节点是否相同</div><div class="line">相同则使用patchVnode给老节点打补丁</div><div class="line">不相同则使用新节点直接替换老节点</div><div class="line">对于sameVnode判断，其实就是简单比较了几个属性判断</div><div class="line"></div><div class="line">`<span class="string">``</span>js</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">sameVnode</span> (<span class="params">a, b</span>) </span>&#123;</div><div class="line">  <span class="keyword">return</span> (</div><div class="line">    a.key === b.key &amp;&amp; (</div><div class="line">      (</div><div class="line">        a.tag === b.tag &amp;&amp;</div><div class="line">        a.isComment === b.isComment &amp;&amp;</div><div class="line">        isDef(a.data) === isDef(b.data) &amp;&amp;</div><div class="line">        sameInputType(a, b)</div><div class="line">      ) || (</div><div class="line">        isTrue(a.isAsyncPlaceholder) &amp;&amp;</div><div class="line">        a.asyncFactory === b.asyncFactory &amp;&amp;</div><div class="line">        isUndef(b.asyncFactory.error)</div><div class="line">      )</div><div class="line">    )</div><div class="line">  )</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>对于patchVnode<br>其实就是比较节点的子节点，分别对新老节点的拥有的子节点做判断，假如两者都没有或者一者有一者没有，就比较容易，直接删除或者增加即可，但是假如两者都有子节点，这里就涉及到列表对比以及一些复用操作了，实现的方法是updateChildren</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">patchVnode</span> (<span class="params">oldVnode, vnode, insertedVnodeQueue, removeOnly</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (oldVnode === vnode) &#123;</div><div class="line">      <span class="comment">// 新老节点相同</span></div><div class="line">      <span class="keyword">return</span></div><div class="line">    &#125;</div><div class="line">    <span class="comment">// ... 省略代码</span></div><div class="line">    <span class="keyword">if</span> (isUndef(vnode.text)) &#123;</div><div class="line">      <span class="comment">// 假如新节点没有text</span></div><div class="line">      <span class="keyword">if</span> (isDef(oldCh) &amp;&amp; isDef(ch)) &#123;</div><div class="line">        <span class="comment">// 假如老节点和新节点都有子节点</span></div><div class="line">        <span class="comment">// 不相等则更新子节点</span></div><div class="line">        <span class="keyword">if</span> (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly)</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(ch)) &#123;</div><div class="line">        <span class="comment">// 新节点有子节点，老节点没有</span></div><div class="line">                <span class="comment">// 老节点加上</span></div><div class="line">        <span class="keyword">if</span> (isDef(oldVnode.text)) nodeOps.setTextContent(elm, <span class="string">''</span>)</div><div class="line">        addVnodes(elm, <span class="literal">null</span>, ch, <span class="number">0</span>, ch.length - <span class="number">1</span>, insertedVnodeQueue)</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(oldCh)) &#123;</div><div class="line">        <span class="comment">// 老节点有子节点，新节点没有</span></div><div class="line">                <span class="comment">// 老节点移除</span></div><div class="line">        removeVnodes(elm, oldCh, <span class="number">0</span>, oldCh.length - <span class="number">1</span>)</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(oldVnode.text)) &#123;</div><div class="line">        <span class="comment">// 老节点有文本，新节点没有文本</span></div><div class="line">        nodeOps.setTextContent(elm, <span class="string">''</span>)</div><div class="line">      &#125;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (oldVnode.text !== vnode.text) &#123;</div><div class="line">      <span class="comment">// 假如新节点和老节点text不相等</span></div><div class="line">      nodeOps.setTextContent(elm, vnode.text)</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (isDef(data)) &#123;</div><div class="line">      <span class="keyword">if</span> (isDef(i = data.hook) &amp;&amp; isDef(i = i.postpatch)) i(oldVnode, vnode)</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>我们最后再来看看这个<code>updateChildren</code><br>这部分其实就是<a href="https://leetcode.com/problems/edit-distance/" target="_blank" rel="external">https://leetcode.com/problems/edit-distance/</a> 最小编辑距离问题，这里也并没有用复杂的动态规划算法(复杂度为O(m * n)）去实现最小的移动操作,而是选择可牺牲一定的dom操作去优化部分场景，复杂度可以降低到O(max(m, n)，比较分别首尾节点，如果没有匹配到，则使用第一个节点key（这里就是我们常在v-for用的）去找相同的key去patch比较，假如没有key的话，则是直接遍历找相似的节点，有则patch移动，没有则创建新节点</p>
+<p>这里告诉我们<br>列表假如有可能有复用的节点，可以使用唯一的key去标识，提升patch效率，但是也不能乱设置key,假如根本不一样，但是你设置一样的话，会导致框架没找到真正相似的节点去复用，反而降低效率，会增加一个创建dom的消耗</p>
+<p>这里代码较多，有兴趣的读者可以深入阅读，这里我就不画图了，读者也可以找网上的相应updateChildren的图，有助于理解patch的过程</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateChildren</span> (<span class="params">parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly</span>) </span>&#123;</div><div class="line">    <span class="keyword">let</span> oldStartIdx = <span class="number">0</span></div><div class="line">    <span class="keyword">let</span> newStartIdx = <span class="number">0</span></div><div class="line">    <span class="keyword">let</span> oldEndIdx = oldCh.length - <span class="number">1</span></div><div class="line">    <span class="keyword">let</span> oldStartVnode = oldCh[<span class="number">0</span>]</div><div class="line">    <span class="keyword">let</span> oldEndVnode = oldCh[oldEndIdx]</div><div class="line">    <span class="keyword">let</span> newEndIdx = newCh.length - <span class="number">1</span></div><div class="line">    <span class="keyword">let</span> newStartVnode = newCh[<span class="number">0</span>]</div><div class="line">    <span class="keyword">let</span> newEndVnode = newCh[newEndIdx]</div><div class="line">    <span class="keyword">let</span> oldKeyToIdx, idxInOld, vnodeToMove, refElm</div><div class="line"></div><div class="line">    <span class="comment">// removeOnly is a special flag used only by &lt;transition-group&gt;</span></div><div class="line">    <span class="comment">// to ensure removed elements stay in correct relative positions</span></div><div class="line">    <span class="comment">// during leaving transitions</span></div><div class="line">    <span class="keyword">const</span> canMove = !removeOnly</div><div class="line"></div><div class="line">    <span class="keyword">while</span> (oldStartIdx &lt;= oldEndIdx &amp;&amp; newStartIdx &lt;= newEndIdx) &#123;</div><div class="line">      <span class="keyword">if</span> (isUndef(oldStartVnode)) &#123;</div><div class="line">        <span class="comment">// 假如老节点的第一个子节点不存在</span></div><div class="line">        <span class="comment">// 老节点头指针就往下一个移动</span></div><div class="line">        oldStartVnode = oldCh[++oldStartIdx] <span class="comment">// Vnode has been moved left</span></div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isUndef(oldEndVnode)) &#123;</div><div class="line">        <span class="comment">// 假如老节点的最后一个子节点不存在</span></div><div class="line">        <span class="comment">// 老节点尾指针就往上一个移动</span></div><div class="line">        oldEndVnode = oldCh[--oldEndIdx]</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldStartVnode, newStartVnode)) &#123;</div><div class="line">        <span class="comment">// 假如新节点的第一个和老节点的第一个相同</span></div><div class="line">        <span class="comment">// patch该节点并且新老节点头指针分别往下一个移动</span></div><div class="line">        patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue)</div><div class="line">        oldStartVnode = oldCh[++oldStartIdx]</div><div class="line">        newStartVnode = newCh[++newStartIdx]</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldEndVnode, newEndVnode)) &#123;</div><div class="line">        <span class="comment">// 假如新节点的最后一个和老节点的最后一个相同</span></div><div class="line">        <span class="comment">// patch该节点并且新老节点尾指针分别往上一个移动</span></div><div class="line">        patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue)</div><div class="line">        oldEndVnode = oldCh[--oldEndIdx]</div><div class="line">        newEndVnode = newCh[--newEndIdx]</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldStartVnode, newEndVnode)) &#123; <span class="comment">// Vnode moved right</span></div><div class="line">        <span class="comment">// 假如新节点的最后一个和老节点的第一个相同</span></div><div class="line">        <span class="comment">// patch该节点并且新节点尾指针往上一个移动，老节点头指针往下一个移动</span></div><div class="line">        patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue)</div><div class="line">        canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm))</div><div class="line">        oldStartVnode = oldCh[++oldStartIdx]</div><div class="line">        newEndVnode = newCh[--newEndIdx]</div><div class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldEndVnode, newStartVnode)) &#123; <span class="comment">// Vnode moved left</span></div><div class="line">        <span class="comment">// 假如新节点的第一个和老节点的最后一个相同</span></div><div class="line">        <span class="comment">// patch该节点并且老节点尾指针往上一个移动，新节点头指针往下一个移动</span></div><div class="line">        patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue)</div><div class="line">        canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm)</div><div class="line">        oldEndVnode = oldCh[--oldEndIdx]</div><div class="line">        newStartVnode = newCh[++newStartIdx]</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 创建老节点key to index的映射</span></div><div class="line">        <span class="keyword">if</span> (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)</div><div class="line">        idxInOld = isDef(newStartVnode.key)</div><div class="line">          ? oldKeyToIdx[newStartVnode.key] <span class="comment">// 假如新节点第一个有key,找该key下老节点的index</span></div><div class="line">          : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx) <span class="comment">// 假如新节点没有key,直接遍历找相同的index</span></div><div class="line">        <span class="keyword">if</span> (isUndef(idxInOld)) &#123; <span class="comment">// New element</span></div><div class="line">          <span class="comment">// 假如没有找到index,则创建节点</span></div><div class="line">          createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm)</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">          <span class="comment">// 假如有index,则找出这个需要move的老节点</span></div><div class="line">          vnodeToMove = oldCh[idxInOld]</div><div class="line">          <span class="comment">/* istanbul ignore if */</span></div><div class="line">          <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'production'</span> &amp;&amp; !vnodeToMove) &#123;</div><div class="line">            warn(</div><div class="line">              <span class="string">'It seems there are duplicate keys that is causing an update error. '</span> +</div><div class="line">              <span class="string">'Make sure each v-for item has a unique key.'</span></div><div class="line">            )</div><div class="line">          &#125;</div><div class="line">          <span class="keyword">if</span> (sameVnode(vnodeToMove, newStartVnode)) &#123;</div><div class="line">            <span class="comment">// move老节点和新节点的第一个基本相同则开始patch</span></div><div class="line">            patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue)</div><div class="line">            <span class="comment">// 设置老节点空</span></div><div class="line">            oldCh[idxInOld] = <span class="literal">undefined</span></div><div class="line">            canMove &amp;&amp; nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)</div><div class="line">          &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 不同则还是创建新节点</span></div><div class="line">            <span class="comment">// same key but different element. treat as new element</span></div><div class="line">            createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm)</div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">        newStartVnode = newCh[++newStartIdx]</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (oldStartIdx &gt; oldEndIdx) &#123;</div><div class="line">      <span class="comment">// 假如老节点的头指针超过了尾部的指针</span></div><div class="line">      <span class="comment">// 说明缺少了节点</span></div><div class="line">      refElm = isUndef(newCh[newEndIdx + <span class="number">1</span>]) ? <span class="literal">null</span> : newCh[newEndIdx + <span class="number">1</span>].elm</div><div class="line">      addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue)</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (newStartIdx &gt; newEndIdx) &#123;</div><div class="line">      <span class="comment">// 假如新节点的头指针超过了尾部的指针</span></div><div class="line">      <span class="comment">// 说明多了节点</span></div><div class="line">      removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx)</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>总结</p>
+<p>到这里整体Vue2原理也就讲解结束了，还有很多细节没有深入，读者可以阅读源码去深入研究。<br>我们可以再回顾下开头的问题（其实文中也是不断的在提出问题解决问题），作为看到这里的你，希望你能有所收获～</p>
+<ul>
+<li>数据响应？如何得知数据变化？（提示：defineProperty)<br>还有一个小细节，app.message如何拿到vue data中的message?</li>
+<li>数据变动如何和视图联系在一起？（提示：Watcher、Dep、Observer)</li>
+<li>virtual dom是什么？virtual dom diff又是什么？（提示：特殊的js对象)</li>
+</ul>
+<h3 id="参考链接-推荐阅读"><a href="#参考链接-推荐阅读" class="headerlink" title="参考链接/推荐阅读"></a>参考链接/推荐阅读</h3><p><a href="https://github.com/livoras/blog/issues/13" target="_blank" rel="external">深度剖析：如何实现一个 Virtual DOM 算法</a><br><a href="https://github.com/livoras/blog/issues/13" target="_blank" rel="external">Vue源码详解:compile,link,依赖,批处理…一网打尽，全解析!</a><br><a href="https://cn.vuejs.org/v2/guide/reactivity.html" target="_blank" rel="external">深入响应式原理</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/vue/" rel="tag"># vue</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/20/css_layout/" rel="next" title="css常用布局总结">
+                <i class="fa fa-chevron-left"></i> css常用布局总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/06/mobile-end-skills/" rel="prev" title="【译】vue 自定义指令的魅力">
+                【译】vue 自定义指令的魅力 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars0.githubusercontent.com/u/7390956?v=3&s=460"
+               alt="Gao lu" />
+          <p class="site-author-name" itemprop="name">Gao lu</p>
+           
+              <p class="site-description motion-element" itemprop="description">时间就像一张网，你撒在哪里，你的收获就在哪里。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从一个简单的应用看起"><span class="nav-number">2.</span> <span class="nav-text">从一个简单的应用看起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据响应原理"><span class="nav-number">3.</span> <span class="nav-text">数据响应原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Object-defineProperty"><span class="nav-number">3.1.</span> <span class="nav-text">Object.defineProperty</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#观察者模式（Observer-Watcher-Dep"><span class="nav-number">3.2.</span> <span class="nav-text">观察者模式（Observer, Watcher, Dep)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vm-render"><span class="nav-number">3.3.</span> <span class="nav-text">vm._render</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模板编译"><span class="nav-number">3.4.</span> <span class="nav-text">模板编译</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#模板"><span class="nav-number">3.5.</span> <span class="nav-text">模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vm-update"><span class="nav-number">3.6.</span> <span class="nav-text">vm._update</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据到视图的整体流程"><span class="nav-number">3.7.</span> <span class="nav-text">数据到视图的整体流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Virtual-DOM"><span class="nav-number">3.8.</span> <span class="nav-text">Virtual DOM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Virtual-DOM算法"><span class="nav-number">3.9.</span> <span class="nav-text">Virtual DOM算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Virtual-DOM-Diff"><span class="nav-number">3.10.</span> <span class="nav-text">Virtual DOM Diff</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-推荐阅读"><span class="nav-number">4.</span> <span class="nav-text">参考链接/推荐阅读</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gao lu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
